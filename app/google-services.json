@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "408756244911",
+    "project_id": "estudio-box-20405",
+    "storage_bucket": "estudio-box-20405.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:408756244911:android:a5b121bca4d64356201f5a",
+        "android_client_info": {
+          "package_name": "com.massvision.estudiobox"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "408756244911-mq8gar8jgfmm3rtc8fkvo88kl9e8fkln.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMV38yMg-IyTW8O4IrbKoRjxawkRzXH38"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "408756244911-mq8gar8jgfmm3rtc8fkvo88kl9e8fkln.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Estudio Box</string>
+    <string name="prefs_file">com.massvision.estudiobox.PREFERENCE_FILE_KEY</string>
+</resources>

@@ -54,13 +54,6 @@ class AuthActivity : AppCompatActivity() {
         signUpButton.setOnClickListener {
             if(emailEditText.text.isNotEmpty() && passwordEditText.text.isNotEmpty())
             {
-                val builder = AlertDialog.Builder(this)
-                builder.setTitle("Info")
-                builder.setMessage("Antes de conectar: email="+emailEditText.text.toString()+
-                " pas= "+passwordEditText.text.toString())
-                builder.setPositiveButton("Aceptar",null)
-                val dialog: AlertDialog = builder.create()
-                dialog.show()
                 FirebaseAuth.getInstance().createUserWithEmailAndPassword(emailEditText.text.toString(),
                     passwordEditText.text.toString()).addOnCompleteListener()
                 {

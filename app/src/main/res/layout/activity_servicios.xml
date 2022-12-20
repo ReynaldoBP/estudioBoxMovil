@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CompanyListActivity">
+    tools:context=".View.ServiciosActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,18 +29,17 @@
                 android:orientation="vertical" >
 
                 <Button
-                    android:id="@+id/empresaTestButton"
+                    android:id="@+id/servicioAtencionClienteButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Creditos Economicos" />
+                    android:text="Atención al cliente" />
 
                 <Button
-                    android:id="@+id/artefactaTestButton"
+                    android:id="@+id/cobranzaButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Artefacta" />
+                    android:text="Cobranza" />
             </LinearLayout>
         </ScrollView>
-
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

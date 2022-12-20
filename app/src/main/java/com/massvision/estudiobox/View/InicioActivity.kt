@@ -1,11 +1,20 @@
-package com.massvision.estudiobox
+package com.massvision.estudiobox.View
 
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.activity_inicio.*
+import org.json.JSONObject
+import androidx.lifecycle.lifecycleScope
+import com.massvision.estudiobox.EncuestaDataCollectionItem
+import com.massvision.estudiobox.R
+import com.massvision.estudiobox.Repository.ApiService
+import com.massvision.estudiobox.Repository.RetrofitHelper
+
 
 enum class ProviderType
 {
@@ -16,22 +25,24 @@ enum class ProviderType
 class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
+        setContentView(R.layout.activity_inicio)
         //Logica para ingresar por correo-firebase
         val bundle= intent.extras
         val email = bundle?.getString("email")
         val provider = bundle?.getString("provider")
-        setup("Bienvenido, "+email?:"",provider?:"")
+        setup(email?:"",provider?:"")
         //Guardar la sesión del usuario autenticado
         val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
         prefs.putString("email",email)
         prefs.putString("provider",provider)
         prefs.apply()
+
+
     }
     private fun setup(email:String,provider:String)
     {
         title = "Menú"
-        emailtextView.text = email
+        emailtextView.text = "Bienvenido, "+email
         //providertextView.text = provider
         //Botón de Cerrar Sesión
         logOutButton.setOnClickListener {
@@ -45,7 +56,7 @@ class HomeActivity : AppCompatActivity() {
         }
         //Botón de Empresas
         empresaButton.setOnClickListener {
-            val companyListIntent = Intent(this,CompanyListActivity::class.java).apply()
+            val companyListIntent = Intent(this, EmpresaActivity::class.java).apply()
             {
             }
             startActivity(companyListIntent)

@@ -1,4 +1,4 @@
-package com.massvision.estudiobox
+package com.massvision.estudiobox.Model
 
 data class EncuestaDataCollectionItem(
     val intStatus:Int,
@@ -9,6 +9,8 @@ data class EncuestaListItem(
     val intIdEncuesta:Int,
     val strDescripcion:String,
     val strTitulo:String,
+    val strEmpresa:String,
+    val strArea:String,
     val strEstado:String,
     val strusrCreacion:String,
     val strFeCreacion:String,

@@ -22,10 +22,21 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/bienvenidoTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ingresa a tu cuenta"
+            android:text="Bienvenido"
+            android:textAlignment="center" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Para comenzar inicia sesión con tu correo electrónico y contraseña"
             android:textAlignment="center" />
 
         <Space
@@ -55,6 +66,7 @@
 
             <Button
                 android:id="@+id/loginButton"
+                android:backgroundTint="@color/design_default_color_primary_variant"
                 android:layout_width="160dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -68,6 +80,7 @@
 
             <Button
                 android:id="@+id/signUpButton"
+                android:backgroundTint="@color/design_default_color_primary_variant"
                 android:layout_width="160dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -83,6 +96,7 @@
 
             <Button
                 android:id="@+id/googleButton"
+                android:backgroundTint="@color/design_default_color_primary_variant"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/googleg_standard_color_18"

@@ -2,9 +2,13 @@ package com.massvision.estudiobox.View
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -47,7 +51,10 @@ class LoginActivity : AppCompatActivity() {
     }
     private fun setup()
     {
-        title="Autenticación"
+        title=""
+        bienvenidoTextView.textSize = 20f
+        bienvenidoTextView.setTextColor(Color.BLACK)
+        bienvenidoTextView.setTypeface(Typeface.SANS_SERIF, Typeface.NORMAL)
         signUpButton.setOnClickListener {
             if(emailEditText.text.isNotEmpty() && passwordEditText.text.isNotEmpty())
             {
@@ -103,12 +110,19 @@ class LoginActivity : AppCompatActivity() {
     }
     private fun showHome(email:String, provider: ProviderType)
     {
-        val homeIntent = Intent(this, HomeActivity::class.java).apply()
+        /*val homeIntent = Intent(this, HomeActivity::class.java).apply()
         {
             putExtra("email",email)
             putExtra("provider",provider.name)
         }
-        startActivity(homeIntent)
+        startActivity(homeIntent)*/
+        val empresaActivityIntent = Intent(this, EmpresaActivity::class.java).apply()
+        {
+            putExtra("email",email)
+            putExtra("provider",provider.name)
+        }
+        startActivity(empresaActivityIntent)
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

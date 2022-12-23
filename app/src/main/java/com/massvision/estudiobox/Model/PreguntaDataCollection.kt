@@ -1,4 +1,4 @@
-package com.massvision.estudiobox
+package com.massvision.estudiobox.Model
 
 data class PreguntaDataCollectionItem(
     val intStatus:Int,

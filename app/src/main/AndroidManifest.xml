@@ -26,6 +26,7 @@
         </activity>
         <activity
             android:name=".View.EncuestaActivity"
+            android:theme="@style/ActionBarPersonalizado"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -40,6 +41,7 @@
         </activity>
         <activity
             android:name=".View.EmpresaActivity"
+            android:theme="@style/ActionBarPersonalizado"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

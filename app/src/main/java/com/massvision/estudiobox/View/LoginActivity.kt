@@ -103,12 +103,19 @@ class LoginActivity : AppCompatActivity() {
     }
     private fun showHome(email:String, provider: ProviderType)
     {
-        val homeIntent = Intent(this, HomeActivity::class.java).apply()
+        /*val homeIntent = Intent(this, HomeActivity::class.java).apply()
         {
             putExtra("email",email)
             putExtra("provider",provider.name)
         }
-        startActivity(homeIntent)
+        startActivity(homeIntent)*/
+        val empresaActivityIntent = Intent(this, EmpresaActivity::class.java).apply()
+        {
+            putExtra("email",email)
+            putExtra("provider",provider.name)
+        }
+        startActivity(empresaActivityIntent)
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

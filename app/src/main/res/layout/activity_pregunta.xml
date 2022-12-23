@@ -15,6 +15,7 @@
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
         android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/preguntaLayoutFooter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,5 +33,25 @@
                 android:orientation="vertical" />
         </ScrollView>
 
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/preguntaLayoutFooter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="32dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/buttonGuardarEncuesta"
+            android:backgroundTint="@color/design_default_color_primary_variant"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Guardar Encuesta" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

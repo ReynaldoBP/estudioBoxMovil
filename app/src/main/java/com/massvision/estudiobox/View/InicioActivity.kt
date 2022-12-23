@@ -4,17 +4,9 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_inicio.*
-import org.json.JSONObject
-import androidx.lifecycle.lifecycleScope
-import com.massvision.estudiobox.EncuestaDataCollectionItem
 import com.massvision.estudiobox.R
-import com.massvision.estudiobox.Repository.ApiService
-import com.massvision.estudiobox.Repository.RetrofitHelper
-
 
 enum class ProviderType
 {
@@ -36,8 +28,6 @@ class HomeActivity : AppCompatActivity() {
         prefs.putString("email",email)
         prefs.putString("provider",provider)
         prefs.apply()
-
-
     }
     private fun setup(email:String,provider:String)
     {

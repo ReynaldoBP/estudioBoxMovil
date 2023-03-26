@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.*
@@ -17,7 +18,6 @@ import com.massvision.estudiobox.R
 import com.massvision.estudiobox.Repository.ApiService
 import com.massvision.estudiobox.Repository.RetrofitHelper
 import org.json.JSONObject
-
 class EncuestaActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,8 +28,9 @@ class EncuestaActivity : AppCompatActivity() {
         if (idEmpresa != null && email != null) {
             setup(idEmpresa,email)
         }
-        Log.d("Interceptor","idEmpresa: "+idEmpresa+" email:"+email)
+        Log.d("Interceptor", "idEmpresa: " + idEmpresa + " email:" + email)
     }
+
     private fun setup(idEmpresa:Int,email:String)
     {
         title = "Encuestas"

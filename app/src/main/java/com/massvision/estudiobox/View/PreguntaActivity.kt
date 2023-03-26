@@ -1,11 +1,14 @@
 package com.massvision.estudiobox.View
 
+import android.app.ActivityManager
+import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.text.InputType
 import android.text.method.DigitsKeyListener
 import android.util.Log
@@ -24,7 +27,9 @@ import com.massvision.estudiobox.Repository.ApiService
 import com.massvision.estudiobox.Repository.RetrofitHelper
 import kotlinx.android.synthetic.main.activity_pregunta.*
 
-
+private val INACTIVITY_TIMEOUT: Long = 5 * 60 * 1000 // 5 minutos de inactividad
+//private val INACTIVITY_TIMEOUT: Long = 1 * 60 * 100 // 6 segundos de inactividad
+private var inactivityTimer: CountDownTimer? = null
 class PreguntaActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +42,24 @@ class PreguntaActivity : AppCompatActivity() {
             setup(idEncuesta,email)
         }
         Log.d("Interceptor","idEncuesta: "+idEncuesta+" email:"+email)
+
+        // Inicializar el temporizador de inactividad
+        inactivityTimer = object : CountDownTimer(INACTIVITY_TIMEOUT, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                // Nada que hacer en cada tick
+            }
+            override fun onFinish() {
+                // Acción a ejecutar cuando el temporizador llega a cero
+                Log.d("Interceptor","---Inactividad---")
+                getViewPublicidad()
+            }
+        }.start()
+    }
+    override fun onUserInteraction() {
+        // Reiniciar el temporizador de inactividad cada vez que se detecte una interacción del usuario
+        Log.d("Interceptor","+++Actividad+++")
+        inactivityTimer?.cancel()
+        inactivityTimer?.start()
     }
     private fun setup(idEncuesta:Int,email:String)
     {
@@ -384,5 +407,26 @@ class PreguntaActivity : AppCompatActivity() {
             putExtra("email",email)
         }
         startActivity(encuestaActivityIntent)
+    }
+    private fun getViewPublicidad()
+    {
+        val am = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val tasks = am.getRunningTasks(Int.MAX_VALUE)
+        if (tasks.isNotEmpty()) {
+            val topActivity = tasks[0].topActivity
+            if (topActivity != null) {
+                if (topActivity.packageName == packageName && topActivity.className == PublicidadActivity::class.java.name) {
+                    Log.e("Interceptor","La actividad PublicidadActivity está en uso")
+                }
+                else
+                {
+                    val publicidadActivityIntent = Intent(this, PublicidadActivity::class.java).apply()
+                    {
+                    }
+                    startActivity(publicidadActivityIntent)
+                    Log.e("Interceptor","La actividad PublicidadActivity NO está en uso")
+                }
+            }
+        }
     }
 }

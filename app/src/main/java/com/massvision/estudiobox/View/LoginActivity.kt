@@ -44,12 +44,15 @@ class LoginActivity : AppCompatActivity() {
     }
     private fun session()
     {
+        Log.d("Interceptor","Sesion")
         val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
         val email = prefs.getString("email", null)
-        if(email!=null)
+        val idCliente = prefs.getInt("idCliente", 0)
+        Log.d("Interceptor","email: "+email+" idCliente: "+idCliente)
+        if(email!=null && idCliente!=null)
         {
             authLayout.visibility = View.INVISIBLE
-            showHome(email)
+            showHome(email,idCliente)
         }
     }
     private fun setup()
@@ -99,12 +102,15 @@ class LoginActivity : AppCompatActivity() {
                     try {
                         val response = apiService.getLogin(jsonObject)
                         Log.d("Interceptor","resultado del getLogin isSuccessful")
-                        Log.d("Interceptor","Response: "+response.body().toString())
+                        Log.d("Interceptor","ResponseLogin: "+response.body().toString())
                         if (response.isSuccessful()) {
                             pDialog.hide()
                             if(response.body()?.intStatus==200)
                             {
-                                showHome(emailEditText.text.toString())
+                                response.body()?.arrayCliente?.intIdCliente?.let { it1 ->
+                                    showHome(emailEditText.text.toString(),
+                                        it1.toInt())
+                                }
                                 emailEditText.setText("")
                                 passwordEditText.setText("")
                             }
@@ -179,11 +185,12 @@ class LoginActivity : AppCompatActivity() {
         val dialog: AlertDialog = builder.create()
         dialog.show()
     }
-    private fun showHome(email:String)
+    private fun showHome(email:String,idCliente:Int)
     {
         val empresaActivityIntent = Intent(this, EmpresaActivity::class.java).apply()
         {
             putExtra("email",email)
+            putExtra("idCliente",idCliente)
         }
         startActivity(empresaActivityIntent)
 

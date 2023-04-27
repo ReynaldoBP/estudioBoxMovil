@@ -1,9 +1,11 @@
 package com.massvision.estudiobox.Model
 
+import com.google.gson.JsonObject
+
 data class LoginDataCollectionItem(
     val intStatus:Int,
     val strMensaje:String,
-    val arrayEmpresa:List<LoginListItem>
+    val arrayCliente:LoginListItem
 )
 data class LoginListItem(
     val intIdCliente:Int,

@@ -28,16 +28,20 @@ class EmpresaActivity : AppCompatActivity() {
         setContentView(R.layout.activity_empresa)
         val bundle= intent.extras
         val email = bundle?.getString("email")
-        Log.d("Interceptor","Empresa activity: "+email)
+        val idCliente = bundle?.getInt("idCliente")
+        Log.d("Interceptor","Empresa activity| Correo: "+email+" idClt: "+idCliente)
         val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
         prefs.putString("email",email)
+        if (idCliente != null) {
+            prefs.putInt("idCliente",idCliente)
+        }
         prefs.apply()
-        if(email!=null)
+        if(email!=null && idCliente!=null)
         {
-            setup(email)
+            setup(email,idCliente)
         }
     }
-    private fun setup(email:String)
+    private fun setup(email:String,idCliente:Int)
     {
         title = "Empresas Participantes"
         val pDialog = SweetAlertDialog(this@EmpresaActivity, SweetAlertDialog.PROGRESS_TYPE)
@@ -48,7 +52,10 @@ class EmpresaActivity : AppCompatActivity() {
         //consumo ApiRest
         Log.d("Interceptor","consumo ApiRest")
         val apiService = RetrofitHelper.getInstance().create(ApiService::class.java)
+        val jsonData = JsonObject()
+        jsonData.addProperty("intIdCliente",idCliente)
         val jsonObject = JsonObject()
+        jsonObject.add("data",jsonData)
         lifecycleScope.launchWhenCreated {
             try {
                 val response = apiService.getEmpresa(jsonObject)

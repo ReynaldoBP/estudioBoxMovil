@@ -24,14 +24,15 @@ class EncuestaActivity : AppCompatActivity() {
         setContentView(R.layout.activity_encuesta)
         val bundle= intent.extras
         val idEmpresa = bundle?.getInt("idEmpresa")
+        val idCliente = bundle?.getInt("idCliente")
         val email = bundle?.getString("email")
-        if (idEmpresa != null && email != null) {
-            setup(idEmpresa,email)
+        if (idEmpresa != null && email != null && idCliente != null) {
+            setup(idEmpresa,email,idCliente)
         }
         Log.d("Interceptor", "idEmpresa: " + idEmpresa + " email:" + email)
     }
 
-    private fun setup(idEmpresa:Int,email:String)
+    private fun setup(idEmpresa:Int,email:String,idCliente:Int)
     {
         title = "Encuestas"
         val pDialog = SweetAlertDialog(this@EncuestaActivity, SweetAlertDialog.PROGRESS_TYPE)
@@ -42,9 +43,12 @@ class EncuestaActivity : AppCompatActivity() {
         //consumo ApiRest
         Log.d("Interceptor","consumo ApiRest")
         Log.d("Interceptor", "idEmpresa: "+idEmpresa)
+        Log.d("Interceptor", "idCliente: "+idCliente)
+
         val apiService = RetrofitHelper.getInstance().create(ApiService::class.java)
         val jsonData = JsonObject()
         jsonData.addProperty("intIdEmpresa",idEmpresa)
+        jsonData.addProperty("intIdCliente",idCliente)
         val jsonObject = JsonObject()
         jsonObject.add("data",jsonData)
 
@@ -85,7 +89,7 @@ class EncuestaActivity : AppCompatActivity() {
                             val cardView = CardView(this@EncuestaActivity)
                             cardView.radius = 15f
                             cardView.radius = 25f
-                            val color = ContextCompat.getColor(this@EncuestaActivity, com.google.android.material.R.color.design_default_color_primary_variant)
+                            val color = ContextCompat.getColor(this@EncuestaActivity, android.R.color.white)
                             cardView.setCardBackgroundColor(color)
                             cardView.setContentPadding(36,36,36,36)
                             cardView.layoutParams = params
@@ -94,14 +98,22 @@ class EncuestaActivity : AppCompatActivity() {
                             val textEncuesta = TextView(this@EncuestaActivity)
                             textEncuesta.text = "Título: "+arrayItem.strTitulo;
                             textEncuesta.textSize = 20f
-                            textEncuesta.setTextColor(Color.WHITE)
+                            textEncuesta.setTextColor(Color.BLACK)
                             textEncuesta.setTypeface(Typeface.SANS_SERIF, Typeface.NORMAL)
-                            //Creamos otro texto
-                            val textDescEncuesta = TextView(this@EncuestaActivity)
-                            textDescEncuesta.text = "Area: "+arrayItem.strArea
-                            textDescEncuesta.textSize = 17f
-                            textDescEncuesta.setTypeface(Typeface.MONOSPACE, Typeface.ITALIC)
-                            textDescEncuesta.setTextColor(Color.parseColor("#E0F2F1"))
+                            //Creamos Texto para la Sucursal
+                            val textSucursalEncuesta = TextView(this@EncuestaActivity)
+                            textSucursalEncuesta.text = "Sucursal: "+arrayItem.strSucursal
+                            textSucursalEncuesta.textSize = 17f
+                            textSucursalEncuesta.setTypeface(Typeface.MONOSPACE, Typeface.ITALIC)
+                            textEncuesta.setTextColor(Color.BLACK)
+                            val spaceSucursal = Space(this@EncuestaActivity)
+                            spaceSucursal.setLayoutParams(spaceLayout)
+                            //Creamos Texto para las areas
+                            val textAreaEncuesta = TextView(this@EncuestaActivity)
+                            textAreaEncuesta.text = "Area: "+arrayItem.strArea
+                            textAreaEncuesta.textSize = 17f
+                            textAreaEncuesta.setTypeface(Typeface.MONOSPACE, Typeface.ITALIC)
+                            textEncuesta.setTextColor(Color.BLACK)
                             val space = Space(this@EncuestaActivity)
                             space.setLayoutParams(spaceLayout)
 
@@ -110,9 +122,10 @@ class EncuestaActivity : AppCompatActivity() {
                             textVerPreguntas.text = "Iniciar Encuesta >>"
                             textVerPreguntas.textSize = 14f
                             textVerPreguntas.setTypeface(Typeface.MONOSPACE, Typeface.ITALIC)
-                            textVerPreguntas.setTextColor(Color.WHITE)
+                            textVerPreguntas.setTextColor(Color.BLACK)
                             cardLinearLayout.addView(textEncuesta)
-                            cardLinearLayout.addView(textDescEncuesta)
+                            cardLinearLayout.addView(textSucursalEncuesta)
+                            cardLinearLayout.addView(textAreaEncuesta)
                             cardLinearLayout.addView(space)
                             cardLinearLayout.addView(textVerPreguntas)
                             cardView.setOnClickListener {

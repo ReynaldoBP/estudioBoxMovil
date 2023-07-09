@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:srcCompat="@mipmap/agripac_logo" />
+            app:srcCompat="@mipmap/clinica_kennedy_logo" />
 
         <LinearLayout
             android:id="@+id/fullscreen_content_controls"

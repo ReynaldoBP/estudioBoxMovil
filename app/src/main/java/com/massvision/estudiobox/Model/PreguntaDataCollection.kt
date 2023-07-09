@@ -12,6 +12,7 @@ data class PreguntaListItem(
     val strEncuesta:String,
     val strTipoOpcionRespuesta:String,
     val intCantidadEstrellas:Int,
+    val strValorDesplegable:String,
     val strEstado:String,
     val strusrCreacion:String,
     val strFeCreacion:String,

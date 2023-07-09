@@ -91,7 +91,7 @@ class EmpresaActivity : AppCompatActivity() {
                             //Creamos el cardView
                             val cardView = CardView(this@EmpresaActivity)
                             cardView.radius = 25f
-                            val color = ContextCompat.getColor(this@EmpresaActivity, com.google.android.material.R.color.design_default_color_primary_variant)
+                            val color = ContextCompat.getColor(this@EmpresaActivity, android.R.color.white)
                             cardView.setCardBackgroundColor(color)
                             cardView.setContentPadding(36,36,36,36)
                             cardView.layoutParams = params
@@ -100,14 +100,14 @@ class EmpresaActivity : AppCompatActivity() {
                             val textEmpresa = TextView(this@EmpresaActivity)
                             textEmpresa.text = "Empresa: "+arrayItem.strNombreComercial;
                             textEmpresa.textSize = 20f
-                            textEmpresa.setTextColor(Color.WHITE)
+                            textEmpresa.setTextColor(Color.BLACK)
                             textEmpresa.setTypeface(Typeface.SANS_SERIF, Typeface.NORMAL)
                             //Creamos otro texto para el detalle de la empresa
                             val textDescEmpresa = TextView(this@EmpresaActivity)
                             textDescEmpresa.text = "Dirección: "+arrayItem.strDireccion
                             textDescEmpresa.textSize = 17f
                             textDescEmpresa.setTypeface(Typeface.MONOSPACE, Typeface.ITALIC)
-                            textDescEmpresa.setTextColor(Color.WHITE)
+                            textDescEmpresa.setTextColor(Color.BLACK)
                             val space = Space(this@EmpresaActivity)
                             space.setLayoutParams(spaceLayout)
 
@@ -123,7 +123,7 @@ class EmpresaActivity : AppCompatActivity() {
                             cardLinearLayout.addView(space)
                             cardLinearLayout.addView(textVerEncuesta)
                             cardView.setOnClickListener {
-                                getViewEncuesta(arrayItem.intIdEmpresa,email)
+                                getViewEncuesta(arrayItem.intIdEmpresa,email,idCliente)
                             }
                             cardView.addView(cardLinearLayout)
                             //Agregamos el cardView a nuestro layout
@@ -167,11 +167,12 @@ class EmpresaActivity : AppCompatActivity() {
             }
         }
     }
-    private fun getViewEncuesta(idEmpresa: Int,email: String)
+    private fun getViewEncuesta(idEmpresa: Int,email: String,idCliente: Int)
     {
         val encuestaActivityIntent = Intent(this, EncuestaActivity::class.java).apply()
         {
             putExtra("idEmpresa",idEmpresa)
+            putExtra("idCliente",idCliente)
             putExtra("email",email)
         }
         startActivity(encuestaActivityIntent)

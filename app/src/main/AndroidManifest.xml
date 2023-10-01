@@ -14,7 +14,7 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.EstudioBox"
+        android:theme="@style/ActionBarPersonalizadoGeneral"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
@@ -40,7 +40,7 @@
         <activity
             android:name=".View.EncuestaActivity"
             android:exported="false"
-            android:theme="@style/ActionBarPersonalizado">
+            android:theme="@style/ActionBarPersonalizadoGeneral">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -55,7 +55,7 @@
         <activity
             android:name=".View.EmpresaActivity"
             android:exported="false"
-            android:theme="@style/ActionBarPersonalizado">
+            android:theme="@style/ActionBarPersonalizadoGeneral">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />

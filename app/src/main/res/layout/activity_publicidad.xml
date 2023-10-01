@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/fullscreenBackgroundColor"
+    android:background="@color/white"
     android:theme="@style/ThemeOverlay.EstudioBox.FullscreenContainer"
     tools:context=".View.PublicidadActivity">
 
@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:srcCompat="@mipmap/clinica_kennedy_logo" />
+            app:srcCompat="@mipmap/encuesta_logo" />
 
         <LinearLayout
             android:id="@+id/fullscreen_content_controls"
@@ -52,7 +52,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:backgroundTint="#03A9F4"
+                android:backgroundTint="#0000FF"
                 android:textColor="#FFFFFF"
                 android:text="Empezar Encuesta" />
 

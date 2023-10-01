@@ -17,6 +17,21 @@
     <!--[INI] Estilos del Action Bar -->
     <style name="ActionBarPersonalizado" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/main_orange_color</item>
+        <item name="colorPrimaryVariant">@color/main_orange_color</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/main_orange_color</item>
+        <item name="colorSecondaryVariant">@color/main_orange_color</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@color/main_orange_color</item>
+        <!-- Customize your theme here. -->
+    </style>
+    <!--[FIN] Estilos del Action Bar -->
+    <!--[INI] Estilos del Action Bar General Azul -->
+    <style name="ActionBarPersonalizadoGeneral" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Primary brand color. -->
         <item name="colorPrimary">?attr/colorPrimaryVariant</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/white</item>
@@ -28,7 +43,7 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
-    <!--[FIN] Estilos del Action Bar -->
+    <!--[FIN] Estilos del Action Bar General Azul-->
     <!--[INI] Estilos del date picker Fecha -->
     <style name="DatePickerTheme" parent="Theme.MaterialComponents.Light.Dialog">
         <item name="colorAccent">#2196F3</item>
@@ -53,6 +68,7 @@
         </item>
         <item name="android:windowActionBarOverlay">true</item>
         <item name="android:windowBackground">@null</item>
+        <!--<item name="android:statusBarColor">@color/main_orange_color</item>-->
     </style>
 
     <style name="ThemeOverlay.EstudioBox.FullscreenContainer" parent="">

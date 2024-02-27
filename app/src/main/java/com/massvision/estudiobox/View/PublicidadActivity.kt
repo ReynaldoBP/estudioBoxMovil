@@ -1,22 +1,25 @@
 package com.massvision.estudiobox.View
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Base64
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowInsets
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
+import com.massvision.estudiobox.R
 import com.massvision.estudiobox.databinding.ActivityPublicidadBinding
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- */
 class PublicidadActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPublicidadBinding
@@ -71,10 +74,29 @@ class PublicidadActivity : AppCompatActivity() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityPublicidadBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        val bundle= intent.extras
+        Log.e("Interceptor","actualizando imagen")
+        val publicidadBase64 = bundle?.getString("publicidadBase64")
+        val imageView: ImageView = findViewById(R.id.imageView) // Reemplaza con tu ImageView real
+        if (publicidadBase64 != "") {
+            val decodedBytes: ByteArray = Base64.decode(publicidadBase64, Base64.DEFAULT)
+            val bitmap: Bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+            Glide.with(this)
+                .load(bitmap)
+                .placeholder(R.mipmap.encuesta_logo) // Imagen predeterminada mientras se carga la nueva
+                .error(R.mipmap.encuesta_logo) // Imagen predeterminada en caso de error
+                .into(imageView)
+        }
+        else
+        {
+            Glide.with(this)
+                .load(R.mipmap.encuesta_logo)// Imagen predeterminada si no hay imagen
+                .placeholder(R.mipmap.encuesta_logo) // Imagen predeterminada mientras se carga la nueva
+                .error(R.mipmap.encuesta_logo) // Imagen predeterminada en caso de error
+                .into(imageView)
+        }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         isFullscreen = true

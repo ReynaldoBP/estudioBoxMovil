@@ -129,7 +129,7 @@ class EncuestaActivity : AppCompatActivity() {
                             cardLinearLayout.addView(space)
                             cardLinearLayout.addView(textVerPreguntas)
                             cardView.setOnClickListener {
-                                getViewPregunta(arrayItem.intIdEncuesta,email)
+                                getViewPregunta(arrayItem.intIdEncuesta,arrayItem.strTitulo,arrayItem.strDescripcion,arrayItem.strPermiteFirma,arrayItem.intTiempo,email)
                             }
                             cardView.addView(cardLinearLayout)
                             //Agregamos el cardView a nuestro layout
@@ -178,11 +178,15 @@ class EncuestaActivity : AppCompatActivity() {
             }
         }
     }
-    private fun getViewPregunta(idEncuesta: Int,email:String)
+    private fun getViewPregunta(idEncuesta: Int,titulo:String,descripcion:String,strPermiteFirma:String,intTiempo: Int,email:String)
     {
         val preguntaActivityIntent = Intent(this, PreguntaActivity::class.java).apply()
         {
             putExtra("idEncuesta",idEncuesta)
+            putExtra("titulo",titulo)
+            putExtra("descripcion",descripcion)
+            putExtra("permiteFirma",strPermiteFirma)
+            putExtra("tiempoDeEspera",intTiempo)
             putExtra("email",email)
         }
         startActivity(preguntaActivityIntent)

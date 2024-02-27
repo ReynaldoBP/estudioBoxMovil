@@ -9,6 +9,8 @@ data class EncuestaListItem(
     val intIdEncuesta:Int,
     val strDescripcion:String,
     val strTitulo:String,
+    val strPermiteFirma:String,
+    val intTiempo:Int,
     val strEmpresa:String,
     val strSucursal:String,
     val strArea:String,

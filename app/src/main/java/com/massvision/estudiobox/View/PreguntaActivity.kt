@@ -26,38 +26,55 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.gson.JsonObject
+import com.kyanogen.signatureview.SignatureView
 import com.massvision.estudiobox.R
 import com.massvision.estudiobox.Repository.ApiService
 import com.massvision.estudiobox.Repository.RetrofitHelper
 import kotlinx.android.synthetic.main.activity_pregunta.*
+import android.graphics.Bitmap
+import android.util.Base64
+import java.io.ByteArrayOutputStream
 
-private val INACTIVITY_TIMEOUT: Long = 5 * 60 * 1000 // 5 minutos de inactividad
-//private val INACTIVITY_TIMEOUT: Long = 1 * 60 * 100 // 6 segundos de inactividad
+//private val INACTIVITY_TIMEOUT: Long = 5 * 60 * 1000 // 5 minutos de inactividad
+private var INACTIVITY_TIMEOUT: Long = 1 * 60 * 100 // 6 segundos de inactividad
 private var inactivityTimer: CountDownTimer? = null
+private var publicidadBase64: String = ""
+private var idEncuestaGlobal: Int = 0
+
 class PreguntaActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pregunta)
+        publicidadBase64 = ""
         val bundle= intent.extras
         //setup(email?:"",provider?:"")
         val idEncuesta = bundle?.getInt("idEncuesta")
+        val titulo = bundle?.getString("titulo")
+        val descripcion = bundle?.getString("descripcion")
+        val permiteFirma = bundle?.getString("permiteFirma")
+        val tiempoDeEspera = bundle?.getInt("tiempoDeEspera")
         val email = bundle?.getString("email")
-        if (idEncuesta != null && email!= null) {
-            setup(idEncuesta,email)
+        if (idEncuesta != null && titulo!= null && descripcion!= null && permiteFirma!= null && email!= null) {
+            idEncuestaGlobal = idEncuesta
+            getPublicidad(idEncuestaGlobal)
+            setup(idEncuesta,titulo,descripcion,permiteFirma,email)
         }
-        Log.d("Interceptor","idEncuesta: "+idEncuesta+" email:"+email)
+        Log.d("Interceptor","idEncuesta: "+idEncuestaGlobal+" email:"+email)
 
         // Inicializar el temporizador de inactividad
-        inactivityTimer = object : CountDownTimer(INACTIVITY_TIMEOUT, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                // Nada que hacer en cada tick
-            }
-            override fun onFinish() {
-                // Acción a ejecutar cuando el temporizador llega a cero
-                Log.d("Interceptor","---Inactividad---")
-                getViewPublicidad()
-            }
-        }.start()
+        if (tiempoDeEspera != null) {
+            inactivityTimer = object : CountDownTimer(tiempoDeEspera.toLong(), 1000) {
+
+                override fun onTick(millisUntilFinished: Long) {
+                    // Nada que hacer en cada tick
+                }
+                override fun onFinish() {
+                    // Acción a ejecutar cuando el temporizador llega a cero
+                    Log.d("Interceptor","---Inactividad---"+tiempoDeEspera/1000)
+                    getViewPublicidad()
+                }
+            }.start()
+        }
     }
     override fun onUserInteraction() {
         // Reiniciar el temporizador de inactividad cada vez que se detecte una interacción del usuario
@@ -65,7 +82,7 @@ class PreguntaActivity : AppCompatActivity() {
         inactivityTimer?.cancel()
         inactivityTimer?.start()
     }
-    private fun setup(idEncuesta:Int,email:String)
+    private fun setup(idEncuesta:Int,titulo:String,descripcion:String,permiteFirma:String,email:String)
     {
         title = "Preguntas"
         Log.d("Interceptor", "idEncuesta: "+idEncuesta)
@@ -77,6 +94,7 @@ class PreguntaActivity : AppCompatActivity() {
         //consumo ApiRest
         Log.d("Interceptor","consumo ApiRest")
         val apiService = RetrofitHelper.getInstance().create(ApiService::class.java)
+        //consultamos preguntas
         val jsonData = JsonObject()
         jsonData.addProperty("intIdEncuesta",idEncuesta)
         jsonData.addProperty("strUsrSesion",email)
@@ -127,16 +145,37 @@ class PreguntaActivity : AppCompatActivity() {
                     if (response.body()?.intStatus == 200 && response.body()?.arrayPregunta?.isNotEmpty() == true) {
                         Log.d("Interceptor", "+++++++++++++++")
                         val jsonPregunta = JsonObject()
-                        //Encabezado de la encuesta
+                        //Encabezado de la encuesta-Titulo
                         val textEncuesta = TextView(this@PreguntaActivity)
                         textEncuesta.textSize = 25f
                         textEncuesta.setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL)
                         textEncuesta.setLayoutParams(generalLayout)
-                        textEncuesta.setText("Encuesta")
+                        textEncuesta.setText(titulo)
                         textEncuesta.setBackgroundColor(Color.TRANSPARENT)
                         textEncuesta.setTextColor(Color.BLACK)
                         textEncuesta.setTypeface(null, Typeface.BOLD)// Establecer estilo negrita
                         cardLinearLayoutPreguntas.addView(textEncuesta)
+                        //Establecemos espacio
+                        val spaceEncabezado1 = Space(this@PreguntaActivity)
+                        spaceEncabezado1.setLayoutParams(spaceLayout)
+                        cardLinearLayoutPreguntas.addView(spaceEncabezado1)
+                        //Encabezado de la encuesta-Descripcion
+                        val textEncuestaDesc = TextView(this@PreguntaActivity)
+                        textEncuestaDesc.textSize = 20f
+                        textEncuestaDesc.setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL)
+                        textEncuestaDesc.setLayoutParams(generalLayout)
+                        textEncuestaDesc.setText(descripcion)
+                        textEncuestaDesc.setBackgroundColor(Color.TRANSPARENT)
+                        textEncuestaDesc.setTextColor(Color.BLACK)
+                        //textEncuestaDesc.setTypeface(null, Typeface.BOLD)// Establecer estilo negrita
+                        cardLinearLayoutPreguntas.addView(textEncuestaDesc)
+                        //Establecemos espacio
+                        val spaceEncabezado2 = Space(this@PreguntaActivity)
+                        spaceEncabezado2.setLayoutParams(spaceLayout)
+                        cardLinearLayoutPreguntas.addView(spaceEncabezado2)
+                        val spaceEncabezado3 = Space(this@PreguntaActivity)
+                        spaceEncabezado3.setLayoutParams(spaceLayout)
+                        cardLinearLayoutPreguntas.addView(spaceEncabezado3)
                         //Recorremos las preguntas
                         for (arrayItem in response.body()?.arrayPregunta!!) {
                             Log.d("Interceptor", "Pregunta: " + arrayItem.strPregunta)
@@ -483,8 +522,61 @@ class PreguntaActivity : AppCompatActivity() {
                         preguntaLayoutSecundario.addView(cardViewDA)
 
                         jsonDataRespuesta.addProperty("strUsrSesion", email)
+                        //Validamos si debemos presentar la firma
+                        //if(titulo == "Satisfacción paciente por MSP")
+                        if(permiteFirma == "Si")
+                        {
+                            //Configuramos para que aparezca la firma
+                            val firmaCardView = findViewById<CardView>(R.id.firmaCardView)
+                            firmaCardView.visibility = View.VISIBLE
+                            //Establecemos un texto de ayuda
+                            val textFirma = TextView(this@PreguntaActivity)
+                            textFirma.textSize = 17f
+                            textFirma.setGravity(Gravity.LEFT or Gravity.LEFT)
+                            textFirma.setLayoutParams(generalLayout)
+                            textFirma.setText("Ingrese su Firma:")
+                            textFirma.setBackgroundColor(Color.TRANSPARENT)
+                            textFirma.setTextColor(Color.BLACK)
+                            textFirma.setTypeface(null, Typeface.BOLD)// Establecer estilo negrita
+                            firmaCardView.addView(textFirma)
+                            Log.d("Interceptor", "No Ocultar Firma")
+                            //Instanciamos el objeto de la firma para que aparezca
+                            val firmaSignatureView = findViewById<SignatureView>(R.id.firmaSignatureView)
+                            firmaSignatureView.visibility = View.VISIBLE
+                        }
+                        else
+                        {
+                            Log.d("Interceptor", "Ocultar Firma")
+                            //Configuramos para que no aparezca la firma
+                            val firmaCardView = findViewById<CardView>(R.id.firmaCardView)
+                            firmaCardView.visibility = View.GONE
+                            //Instanciamos el objeto de la firma para que no aparezca
+                            val firmaSignatureView = findViewById<SignatureView>(R.id.firmaSignatureView)
+                            firmaSignatureView.visibility = View.GONE
+                        }
                         //Guardar Encuesta
                         buttonGuardarEncuesta.setOnClickListener {
+                            if(permiteFirma == "Si") {
+                                //Guardarmos la firma
+                                val signatureBitmap = firmaSignatureView.getSignatureBitmap()
+                                // Convertir el bitmap a una cadena Base64
+                                val byteArrayOutputStream = ByteArrayOutputStream()
+                                signatureBitmap.compress(
+                                    Bitmap.CompressFormat.PNG,
+                                    100,
+                                    byteArrayOutputStream
+                                )
+                                val byteArray = byteArrayOutputStream.toByteArray()
+                                val base64String = Base64.encodeToString(byteArray, Base64.DEFAULT)
+                                // Ahora puedes enviar 'base64String' al backend
+                                if (firmaSignatureView.isBitmapEmpty()) {
+                                    Log.d("Interceptor", "Firma vacía")
+                                    jsonDataRespuesta.addProperty("strFirma", "")
+                                } else {
+                                    Log.d("Interceptor", "Firma llena")
+                                    jsonDataRespuesta.addProperty("strFirma", base64String)
+                                }
+                            }
                             val jsonObjectRespuesta = JsonObject()
                             jsonObjectRespuesta.add("data",jsonDataRespuesta)
                             createRespuesta(jsonObjectRespuesta)
@@ -604,8 +696,62 @@ class PreguntaActivity : AppCompatActivity() {
         }
         startActivity(encuestaActivityIntent)
     }
+    private fun getPublicidad(idEncuesta:Int)
+    {
+        publicidadBase64 = ""
+        val pDialog = SweetAlertDialog(this@PreguntaActivity, SweetAlertDialog.PROGRESS_TYPE)
+        pDialog.progressHelper.barColor = Color.parseColor("#A5DC86")
+        pDialog.titleText = "Cargando ..."
+        pDialog.setCancelable(true)
+        pDialog.show()
+        //consumo ApiRest
+        Log.d("Interceptor","consumo ApiRest")
+        val apiService = RetrofitHelper.getInstance().create(ApiService::class.java)
+        val jsonDataPublicidad = JsonObject()
+        jsonDataPublicidad.addProperty("intIdEncuesta",idEncuesta)
+        jsonDataPublicidad.addProperty("estado","Activo")
+        val jsonObjectPublicidad = JsonObject()
+        jsonObjectPublicidad.add("data",jsonDataPublicidad)
+        lifecycleScope.launchWhenCreated {
+            try {
+                val responsePublicidad = apiService.getPublicidad(jsonObjectPublicidad)
+                if (responsePublicidad.isSuccessful()) {
+                    pDialog.hide()
+                    Log.d("Interceptor", "resultado del getPublicidad isSuccessful")
+                    Log.d("Interceptor", "Response: " + responsePublicidad.body().toString())
+                    if (responsePublicidad.body()?.intStatus == 200 && responsePublicidad.body()?.arrayPublicidad?.arrayArchivos?.isNotEmpty() == true)
+                    {
+                        for (arrayItemPublicidad in responsePublicidad.body()?.arrayPublicidad?.arrayArchivos!!) {
+                            Log.d("Interceptor", "NombreArchivo: " + arrayItemPublicidad.strNombreArc)
+                            publicidadBase64 = arrayItemPublicidad.strBase64Image
+                        }
+                    }
+                    else
+                    {
+                        publicidadBase64 = ""
+                    }
+                } else {
+                    publicidadBase64 = ""
+                    pDialog.hide()
+                    SweetAlertDialog(this@PreguntaActivity, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Error")
+                        .setContentText("Ha ocurrido un error, por favor inténtalo de nuevo más tarde")
+                        .show()
+                }
+            } catch (Ex: Exception) {
+                pDialog.hide()
+                SweetAlertDialog(this@PreguntaActivity, SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText("Error")
+                    .setContentText(Ex.localizedMessage)
+                    .show()
+                Log.e("Interceptor", Ex.localizedMessage)
+
+            }
+        }
+    }
     private fun getViewPublicidad()
     {
+        inactivityTimer?.cancel()
         val am = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         val tasks = am.getRunningTasks(Int.MAX_VALUE)
         if (tasks.isNotEmpty()) {
@@ -618,11 +764,14 @@ class PreguntaActivity : AppCompatActivity() {
                 {
                     val publicidadActivityIntent = Intent(this, PublicidadActivity::class.java).apply()
                     {
+                        putExtra("publicidadBase64",publicidadBase64)
                     }
                     startActivity(publicidadActivityIntent)
                     Log.e("Interceptor","La actividad PublicidadActivity NO está en uso")
+                    getPublicidad(idEncuestaGlobal)
                 }
             }
         }
+
     }
 }

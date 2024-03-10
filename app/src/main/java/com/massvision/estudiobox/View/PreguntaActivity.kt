@@ -52,12 +52,13 @@ class PreguntaActivity : AppCompatActivity() {
         val titulo = bundle?.getString("titulo")
         val descripcion = bundle?.getString("descripcion")
         val permiteFirma = bundle?.getString("permiteFirma")
+        val permiteDatoAdicional = bundle?.getString("permiteDatoAdicional")
         val tiempoDeEspera = bundle?.getInt("tiempoDeEspera")
         val email = bundle?.getString("email")
-        if (idEncuesta != null && titulo!= null && descripcion!= null && permiteFirma!= null && email!= null) {
+        if (idEncuesta != null && titulo!= null && descripcion!= null && permiteFirma!= null && permiteDatoAdicional!= null && email!= null) {
             idEncuestaGlobal = idEncuesta
             getPublicidad(idEncuestaGlobal)
-            setup(idEncuesta,titulo,descripcion,permiteFirma,email)
+            setup(idEncuesta,titulo,descripcion,permiteFirma,permiteDatoAdicional,email)
         }
         Log.d("Interceptor","idEncuesta: "+idEncuestaGlobal+" email:"+email)
 
@@ -82,7 +83,7 @@ class PreguntaActivity : AppCompatActivity() {
         inactivityTimer?.cancel()
         inactivityTimer?.start()
     }
-    private fun setup(idEncuesta:Int,titulo:String,descripcion:String,permiteFirma:String,email:String)
+    private fun setup(idEncuesta:Int,titulo:String,descripcion:String,permiteFirma:String,permiteDatoAdicional:String,email:String)
     {
         title = "Preguntas"
         Log.d("Interceptor", "idEncuesta: "+idEncuesta)
@@ -366,161 +367,175 @@ class PreguntaActivity : AppCompatActivity() {
                         val jsonDataRespuesta = JsonObject()
                         jsonDataRespuesta.addProperty("intIdEncuesta",idEncuesta)
                         jsonDataRespuesta.add("arrayPregunta",jsonPregunta)
-                        //Datos Adicionales
-                        //Creamos el cardView de Datos Adicionales
-                        val cardViewDA = CardView(this@PreguntaActivity)
-                        cardViewDA.radius = 15f
-                        cardViewDA.radius = 25f
-                        val color = ContextCompat.getColor(this@PreguntaActivity, android.R.color.white)
-                        cardViewDA.setCardBackgroundColor(color)
-                        cardViewDA.setContentPadding(36,36,36,36)
-                        cardViewDA.layoutParams = parametrosCardView
-                        //Creamos el layaut que va a contener el card view
-                        val cardLinearLayoutDA = LinearLayout(this@PreguntaActivity)
-                        cardLinearLayoutDA.orientation = LinearLayout.VERTICAL
-                        //Establecemos espacio
-                        val space = Space(this@PreguntaActivity)
-                        space.setLayoutParams(spaceLayout)
-                        cardLinearLayoutDA.addView(space)
-
-                        val textDatosAdicionales = TextView(this@PreguntaActivity)
-                        textDatosAdicionales.textSize = 25f
-                        textDatosAdicionales.setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL)
-                        textDatosAdicionales.setLayoutParams(generalLayout)
-                        textDatosAdicionales.setText("Datos Adicionales")
-                        textDatosAdicionales.setBackgroundColor(Color.TRANSPARENT)
-                        textDatosAdicionales.setTextColor(Color.BLACK)
-                        textDatosAdicionales.setTypeface(null, Typeface.BOLD)// Establecer estilo negrita
-                        cardLinearLayoutDA.addView(textDatosAdicionales)
-                        //Correo electronico del encuestado
-                        val textCorreo = EditText(this@PreguntaActivity)
-                        textCorreo.setInputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
-                        textCorreo.setHint("Ingrese su Correo Electrónico")
-                        textCorreo.addTextChangedListener {
-                            jsonDataRespuesta.addProperty(
-                                "strCorreo",
-                                textCorreo.getText().toString()
-                            )
-                            jsonDataRespuesta.addProperty(
-                                "strNombre",
-                                textCorreo.getText().toString().split("@")[0]
-                            )
-                        }
-                        //textCorreo.setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL)
-                        textCorreo.setGravity(Gravity.LEFT)
-                        textCorreo.setLayoutParams(generalLayout)
-                        cardLinearLayoutDA.addView(textCorreo)
-                        //Fecha de nacimiento del encuestado
-                        val textFechaNac = EditText(this@PreguntaActivity)
-                        textFechaNac.setInputType(InputType.TYPE_DATETIME_VARIATION_DATE)
-                        textFechaNac.setHint("Ingrese su Año de Nacimiento")
-                        textFechaNac.setKeyListener(DigitsKeyListener.getInstance("0123456789"));
-                        /*textFechaNac.isClickable=true
-                        textFechaNac.isFocusable=false
-                        textFechaNac.setOnClickListener{
-                            val datePicker = DatePickerFragment { day, month, year -> textFechaNac.setText("$year-$month-$day") }
-                            datePicker.show(supportFragmentManager, "datePicker")
-                        }*/
-                        textFechaNac.addTextChangedListener {
-                            jsonDataRespuesta.addProperty(
-                                "strEdad",
-                                textFechaNac.getText().toString()
-                            )
-                        }
-                        //textFechaNac.setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL)
-                        textFechaNac.setGravity(Gravity.LEFT)
-
-                        textFechaNac.setLayoutParams(generalLayout)
-                        cardLinearLayoutDA.addView(textFechaNac)
-                        //ComboBox Genero del encuestado
-                        val arrayGenero = ArrayList<String>()
-                        arrayGenero.add("Seleccione su Género")
-                        arrayGenero.add("Masculino")
-                        arrayGenero.add("Femenino")
-                        arrayGenero.add("Otros")
-                        val spinnerGenero = Spinner(this@PreguntaActivity)
-                        val spinnerArrayAdapter = ArrayAdapter(
-                            this@PreguntaActivity,
-                            android.R.layout.simple_spinner_dropdown_item,
-                            arrayGenero
-                        )
-                        spinnerGenero.adapter = spinnerArrayAdapter
-                        spinnerGenero.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                            //((TextView) adapterView.getChildAt(0)).setGravity(Gravity.CENTER)
-                            override fun onNothingSelected(parent: AdapterView<*>?) {
-                                Toast.makeText(
-                                    this@PreguntaActivity,
-                                    "onNothingSelected",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
-                            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                                jsonDataRespuesta.addProperty(
-                                    "strGenero",
-                                    arrayGenero[position].toString()
-                                )
-                            }
-                        }
-                        spinnerGenero.setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL)
-                        spinnerGenero.setLayoutParams(desplegableLayout)
-                        // Crear text de genero
-                        val textGenero = TextView(this@PreguntaActivity)
-                        textGenero.textSize = 17f
-                        textGenero.setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL)
-                        textGenero.setLayoutParams(generalLayout)
-                        textGenero.setText("Seleccione su Género")
-                        textGenero.setBackgroundColor(Color.TRANSPARENT)
-                        textGenero.setTextColor(Color.BLACK)
-                        textGenero.setTypeface(null, Typeface.BOLD)// Establecer estilo negrita
-                        cardLinearLayoutDA.addView(textGenero)
-                        // Crear CheckBox de genero
-                        val checkBoxGeneroMasc = CheckBox(this@PreguntaActivity)
-                        checkBoxGeneroMasc.text = "Masculino"
-                        checkBoxGeneroMasc.layoutParams = desplegableLayout
-                        val checkBoxGeneroFem = CheckBox(this@PreguntaActivity)
-                        checkBoxGeneroFem.text = "Femenino"
-                        checkBoxGeneroFem.layoutParams = desplegableLayout
-                        jsonDataRespuesta.addProperty(
-                            "strGenero",""
-                        )
-                        // Obtener el valor del CheckBox seleccionado Masculino
-                        checkBoxGeneroMasc.setOnCheckedChangeListener { buttonView, isChecked ->
-                            if (isChecked) {
-                                // Checkbox Masculino seleccionado
-                                checkBoxGeneroFem.isChecked = false // Deseleccionar Checkbox Femenino
-                                jsonDataRespuesta.addProperty(
-                                    "strGenero","Masculino"
-                                )
-                            } else {
-                                // Checkbox Masculino no seleccionado
-                                jsonDataRespuesta.addProperty(
-                                    "strGenero",""
-                                )
-                            }
-                        }
-                        // Obtener el valor del CheckBox seleccionado Femenino
-                        checkBoxGeneroFem.setOnCheckedChangeListener { buttonView, isChecked ->
-                            if (isChecked) {
-                                // Checkbox Femenino seleccionado
-                                checkBoxGeneroMasc.isChecked = false // Deseleccionar Checkbox Femenino
-                                jsonDataRespuesta.addProperty(
-                                    "strGenero","Femenino"
-                                )
-                            } else {
-                                // Checkbox Femenino no seleccionado
-                                jsonDataRespuesta.addProperty(
-                                    "strGenero",""
-                                )
-                            }
-                        }
-                        cardLinearLayoutDA.addView(checkBoxGeneroMasc)
-                        cardLinearLayoutDA.addView(checkBoxGeneroFem)
-                        //cardLinearLayoutDA.addView(spinnerGenero)
-                        cardViewDA.addView(cardLinearLayoutDA)
                         cardViewPreguntas.addView(cardLinearLayoutPreguntas)
                         preguntaLayoutSecundario.addView(cardViewPreguntas)
-                        preguntaLayoutSecundario.addView(cardViewDA)
+                        //Datos Adicionales
+                        if(permiteDatoAdicional=="Si") {
+                            //Creamos el cardView de Datos Adicionales
+                            val cardViewDA = CardView(this@PreguntaActivity)
+                            cardViewDA.radius = 15f
+                            cardViewDA.radius = 25f
+                            val color =
+                                ContextCompat.getColor(this@PreguntaActivity, android.R.color.white)
+                            cardViewDA.setCardBackgroundColor(color)
+                            cardViewDA.setContentPadding(36, 36, 36, 36)
+                            cardViewDA.layoutParams = parametrosCardView
+                            //Creamos el layaut que va a contener el card view
+                            val cardLinearLayoutDA = LinearLayout(this@PreguntaActivity)
+                            cardLinearLayoutDA.orientation = LinearLayout.VERTICAL
+                            //Establecemos espacio
+                            val space = Space(this@PreguntaActivity)
+                            space.setLayoutParams(spaceLayout)
+                            cardLinearLayoutDA.addView(space)
 
+                            val textDatosAdicionales = TextView(this@PreguntaActivity)
+                            textDatosAdicionales.textSize = 25f
+                            textDatosAdicionales.setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL)
+                            textDatosAdicionales.setLayoutParams(generalLayout)
+                            textDatosAdicionales.setText("Datos Adicionales")
+                            textDatosAdicionales.setBackgroundColor(Color.TRANSPARENT)
+                            textDatosAdicionales.setTextColor(Color.BLACK)
+                            textDatosAdicionales.setTypeface(
+                                null,
+                                Typeface.BOLD
+                            )// Establecer estilo negrita
+                            cardLinearLayoutDA.addView(textDatosAdicionales)
+                            //Correo electronico del encuestado
+                            val textCorreo = EditText(this@PreguntaActivity)
+                            textCorreo.setInputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
+                            textCorreo.setHint("Ingrese su Correo Electrónico")
+                            textCorreo.addTextChangedListener {
+                                jsonDataRespuesta.addProperty(
+                                    "strCorreo",
+                                    textCorreo.getText().toString()
+                                )
+                                jsonDataRespuesta.addProperty(
+                                    "strNombre",
+                                    textCorreo.getText().toString().split("@")[0]
+                                )
+                            }
+                            //textCorreo.setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL)
+                            textCorreo.setGravity(Gravity.LEFT)
+                            textCorreo.setLayoutParams(generalLayout)
+                            cardLinearLayoutDA.addView(textCorreo)
+                            //Fecha de nacimiento del encuestado
+                            val textFechaNac = EditText(this@PreguntaActivity)
+                            textFechaNac.setInputType(InputType.TYPE_DATETIME_VARIATION_DATE)
+                            textFechaNac.setHint("Ingrese su Año de Nacimiento")
+                            textFechaNac.setKeyListener(DigitsKeyListener.getInstance("0123456789"));
+                            /*textFechaNac.isClickable=true
+                            textFechaNac.isFocusable=false
+                            textFechaNac.setOnClickListener{
+                                val datePicker = DatePickerFragment { day, month, year -> textFechaNac.setText("$year-$month-$day") }
+                                datePicker.show(supportFragmentManager, "datePicker")
+                            }*/
+                            textFechaNac.addTextChangedListener {
+                                jsonDataRespuesta.addProperty(
+                                    "strEdad",
+                                    textFechaNac.getText().toString()
+                                )
+                            }
+                            //textFechaNac.setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL)
+                            textFechaNac.setGravity(Gravity.LEFT)
+
+                            textFechaNac.setLayoutParams(generalLayout)
+                            cardLinearLayoutDA.addView(textFechaNac)
+                            //ComboBox Genero del encuestado
+                            val arrayGenero = ArrayList<String>()
+                            arrayGenero.add("Seleccione su Género")
+                            arrayGenero.add("Masculino")
+                            arrayGenero.add("Femenino")
+                            arrayGenero.add("Otros")
+                            val spinnerGenero = Spinner(this@PreguntaActivity)
+                            val spinnerArrayAdapter = ArrayAdapter(
+                                this@PreguntaActivity,
+                                android.R.layout.simple_spinner_dropdown_item,
+                                arrayGenero
+                            )
+                            spinnerGenero.adapter = spinnerArrayAdapter
+                            spinnerGenero.onItemSelectedListener =
+                                object : AdapterView.OnItemSelectedListener {
+                                    //((TextView) adapterView.getChildAt(0)).setGravity(Gravity.CENTER)
+                                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                                        Toast.makeText(
+                                            this@PreguntaActivity,
+                                            "onNothingSelected",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+
+                                    override fun onItemSelected(
+                                        parent: AdapterView<*>?,
+                                        view: View?,
+                                        position: Int,
+                                        id: Long
+                                    ) {
+                                        jsonDataRespuesta.addProperty(
+                                            "strGenero",
+                                            arrayGenero[position].toString()
+                                        )
+                                    }
+                                }
+                            spinnerGenero.setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL)
+                            spinnerGenero.setLayoutParams(desplegableLayout)
+                            // Crear text de genero
+                            val textGenero = TextView(this@PreguntaActivity)
+                            textGenero.textSize = 17f
+                            textGenero.setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL)
+                            textGenero.setLayoutParams(generalLayout)
+                            textGenero.setText("Seleccione su Género")
+                            textGenero.setBackgroundColor(Color.TRANSPARENT)
+                            textGenero.setTextColor(Color.BLACK)
+                            textGenero.setTypeface(null, Typeface.BOLD)// Establecer estilo negrita
+                            cardLinearLayoutDA.addView(textGenero)
+                            // Crear CheckBox de genero
+                            val checkBoxGeneroMasc = CheckBox(this@PreguntaActivity)
+                            checkBoxGeneroMasc.text = "Masculino"
+                            checkBoxGeneroMasc.layoutParams = desplegableLayout
+                            val checkBoxGeneroFem = CheckBox(this@PreguntaActivity)
+                            checkBoxGeneroFem.text = "Femenino"
+                            checkBoxGeneroFem.layoutParams = desplegableLayout
+                            jsonDataRespuesta.addProperty(
+                                "strGenero", ""
+                            )
+                            // Obtener el valor del CheckBox seleccionado Masculino
+                            checkBoxGeneroMasc.setOnCheckedChangeListener { buttonView, isChecked ->
+                                if (isChecked) {
+                                    // Checkbox Masculino seleccionado
+                                    checkBoxGeneroFem.isChecked =
+                                        false // Deseleccionar Checkbox Femenino
+                                    jsonDataRespuesta.addProperty(
+                                        "strGenero", "Masculino"
+                                    )
+                                } else {
+                                    // Checkbox Masculino no seleccionado
+                                    jsonDataRespuesta.addProperty(
+                                        "strGenero", ""
+                                    )
+                                }
+                            }
+                            // Obtener el valor del CheckBox seleccionado Femenino
+                            checkBoxGeneroFem.setOnCheckedChangeListener { buttonView, isChecked ->
+                                if (isChecked) {
+                                    // Checkbox Femenino seleccionado
+                                    checkBoxGeneroMasc.isChecked =
+                                        false // Deseleccionar Checkbox Femenino
+                                    jsonDataRespuesta.addProperty(
+                                        "strGenero", "Femenino"
+                                    )
+                                } else {
+                                    // Checkbox Femenino no seleccionado
+                                    jsonDataRespuesta.addProperty(
+                                        "strGenero", ""
+                                    )
+                                }
+                            }
+                            cardLinearLayoutDA.addView(checkBoxGeneroMasc)
+                            cardLinearLayoutDA.addView(checkBoxGeneroFem)
+                            //cardLinearLayoutDA.addView(spinnerGenero)
+                            cardViewDA.addView(cardLinearLayoutDA)
+                            preguntaLayoutSecundario.addView(cardViewDA)
+                        }
                         jsonDataRespuesta.addProperty("strUsrSesion", email)
                         //Validamos si debemos presentar la firma
                         //if(titulo == "Satisfacción paciente por MSP")
@@ -606,7 +621,7 @@ class PreguntaActivity : AppCompatActivity() {
                     pDialog.hide()
                     SweetAlertDialog(this@PreguntaActivity, SweetAlertDialog.ERROR_TYPE)
                         .setTitleText("Error")
-                        .setContentText("Ha ocurrido un error, por favor inténtalo de nuevo más tarde")
+                        .setContentText("Ha ocurrido un error, al tratar de obtener las preguntas de la encuesta")
                         .show()
                 }
             } catch (Ex: Exception) {
@@ -662,14 +677,14 @@ class PreguntaActivity : AppCompatActivity() {
                         else{
                             SweetAlertDialog(this@PreguntaActivity, SweetAlertDialog.ERROR_TYPE)
                                 .setTitleText("Error")
-                                .setContentText("Ha ocurrido un error, por favor inténtalo de nuevo más tarde")
+                                .setContentText("Ha ocurrido un error, al tratar de ingresar las respuestas")
                                 .show()
                         }
                     } else {
                         pDialog.hide()
                         SweetAlertDialog(this@PreguntaActivity, SweetAlertDialog.ERROR_TYPE)
                             .setTitleText("Error")
-                            .setContentText("Ha ocurrido un error, por favor inténtalo de nuevo más tarde")
+                            .setContentText("Ha ocurrido un error, al tratar de realizar conexión con el servidor")
                             .show()
                     }
                 }catch (Ex:Exception){
@@ -735,7 +750,7 @@ class PreguntaActivity : AppCompatActivity() {
                     pDialog.hide()
                     SweetAlertDialog(this@PreguntaActivity, SweetAlertDialog.ERROR_TYPE)
                         .setTitleText("Error")
-                        .setContentText("Ha ocurrido un error, por favor inténtalo de nuevo más tarde")
+                        .setContentText("Ha ocurrido un error, al tratar de realizar conexión con el servidor")
                         .show()
                 }
             } catch (Ex: Exception) {

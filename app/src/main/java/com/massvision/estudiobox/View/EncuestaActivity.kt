@@ -129,7 +129,15 @@ class EncuestaActivity : AppCompatActivity() {
                             cardLinearLayout.addView(space)
                             cardLinearLayout.addView(textVerPreguntas)
                             cardView.setOnClickListener {
-                                getViewPregunta(arrayItem.intIdEncuesta,arrayItem.strTitulo,arrayItem.strDescripcion,arrayItem.strPermiteFirma,arrayItem.strPermiteDatoAdicional,arrayItem.intTiempo,email)
+                                //1 Empresa Artefacta de prueba / Kennedy 11
+                                if(idEmpresa==11)
+                                {
+                                    getViewDatosPersonales(arrayItem.intIdEncuesta,arrayItem.strTitulo,arrayItem.strDescripcion,arrayItem.strPermiteFirma,arrayItem.strPermiteDatoAdicional,arrayItem.intTiempo,email,idEmpresa)
+                                }
+                                else
+                                {
+                                    getViewPregunta(arrayItem.intIdEncuesta,arrayItem.strTitulo,arrayItem.strDescripcion,arrayItem.strPermiteFirma,arrayItem.strPermiteDatoAdicional,arrayItem.intTiempo,email,idEmpresa)
+                                }
                             }
                             cardView.addView(cardLinearLayout)
                             //Agregamos el cardView a nuestro layout
@@ -178,7 +186,23 @@ class EncuestaActivity : AppCompatActivity() {
             }
         }
     }
-    private fun getViewPregunta(idEncuesta: Int,titulo:String,descripcion:String,strPermiteFirma:String,strPermiteDatoAdicional:String,intTiempo: Int,email:String)
+    private fun getViewDatosPersonales(idEncuesta: Int,titulo:String,descripcion:String,strPermiteFirma:String,strPermiteDatoAdicional:String,intTiempo: Int,email:String,idEmpresa: Int)
+    {
+        val datosPersonalesActivityIntent = Intent(this, DatosPersonalesActivity::class.java).apply()
+        {
+            putExtra("idEncuesta",idEncuesta)
+            putExtra("titulo",titulo)
+            putExtra("descripcion",descripcion)
+            putExtra("permiteFirma",strPermiteFirma)
+            putExtra("permiteDatoAdicional",strPermiteDatoAdicional)
+            putExtra("tiempoDeEspera",intTiempo)
+            putExtra("email",email)
+            putExtra("intEmpresa",idEmpresa)
+
+        }
+        startActivity(datosPersonalesActivityIntent)
+    }
+    private fun getViewPregunta(idEncuesta: Int,titulo:String,descripcion:String,strPermiteFirma:String,strPermiteDatoAdicional:String,intTiempo: Int,email:String,idEmpresa:Int)
     {
         val preguntaActivityIntent = Intent(this, PreguntaActivity::class.java).apply()
         {
@@ -189,6 +213,7 @@ class EncuestaActivity : AppCompatActivity() {
             putExtra("permiteDatoAdicional",strPermiteDatoAdicional)
             putExtra("tiempoDeEspera",intTiempo)
             putExtra("email",email)
+            putExtra("intEmpresa",idEmpresa)
         }
         startActivity(preguntaActivityIntent)
     }

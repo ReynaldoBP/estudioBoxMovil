@@ -55,10 +55,21 @@ class PreguntaActivity : AppCompatActivity() {
         val permiteDatoAdicional = bundle?.getString("permiteDatoAdicional")
         val tiempoDeEspera = bundle?.getInt("tiempoDeEspera")
         val email = bundle?.getString("email")
-        if (idEncuesta != null && titulo!= null && descripcion!= null && permiteFirma!= null && permiteDatoAdicional!= null && email!= null) {
+        val intEmpresa = bundle?.getInt("intEmpresa")
+        Log.d("Interceptor","----------------------------")
+        Log.d("Interceptor","idEncuesta: "+idEncuesta)
+        Log.d("Interceptor","titulo: "+titulo)
+        Log.d("Interceptor","descripcion: "+descripcion)
+        Log.d("Interceptor","permiteFirma: "+permiteFirma)
+        Log.d("Interceptor","permiteDatoAdicional: "+permiteDatoAdicional)
+        Log.d("Interceptor","tiempoDeEspera: "+tiempoDeEspera)
+        Log.d("Interceptor","email: "+email)
+        Log.d("Interceptor","intEmpresa: "+intEmpresa)
+        Log.d("Interceptor","----------------------------")
+        if (idEncuesta != null && titulo!= null && descripcion!= null && permiteFirma!= null && permiteDatoAdicional!= null && tiempoDeEspera!= null && email!= null&& intEmpresa!= null) {
             idEncuestaGlobal = idEncuesta
             getPublicidad(idEncuestaGlobal)
-            setup(idEncuesta,titulo,descripcion,permiteFirma,permiteDatoAdicional,email)
+            setup(idEncuesta,titulo,descripcion,permiteFirma,permiteDatoAdicional,tiempoDeEspera,email,intEmpresa)
         }
         Log.d("Interceptor","idEncuesta: "+idEncuestaGlobal+" email:"+email)
 
@@ -83,7 +94,7 @@ class PreguntaActivity : AppCompatActivity() {
         inactivityTimer?.cancel()
         inactivityTimer?.start()
     }
-    private fun setup(idEncuesta:Int,titulo:String,descripcion:String,permiteFirma:String,permiteDatoAdicional:String,email:String)
+    private fun setup(idEncuesta:Int,titulo:String,descripcion:String,permiteFirma:String,permiteDatoAdicional:String,tiempoDeEspera: Int,email:String,intEmpresa:Int)
     {
         title = "Preguntas"
         Log.d("Interceptor", "idEncuesta: "+idEncuesta)
@@ -594,7 +605,7 @@ class PreguntaActivity : AppCompatActivity() {
                             }
                             val jsonObjectRespuesta = JsonObject()
                             jsonObjectRespuesta.add("data",jsonDataRespuesta)
-                            createRespuesta(jsonObjectRespuesta)
+                            createRespuesta(jsonObjectRespuesta, idEncuestaGlobal,titulo,descripcion,permiteFirma,permiteDatoAdicional,tiempoDeEspera,email,intEmpresa)
                         }
                     }
                     else if(response.body()?.intStatus==204)
@@ -635,7 +646,7 @@ class PreguntaActivity : AppCompatActivity() {
             }
         }
     }
-    private fun createRespuesta(jsonObject:JsonObject)
+    private fun createRespuesta(jsonObject:JsonObject,idEncuesta: Int,titulo:String,descripcion:String,strPermiteFirma:String,strPermiteDatoAdicional:String,intTiempo: Int,email:String,intEmpresa:Int)
     {
         try {
             Log.d("Interceptor", "Request Respuesta: " + jsonObject)
@@ -660,7 +671,14 @@ class PreguntaActivity : AppCompatActivity() {
                                 .setConfirmText("Aceptar")
                                 .setConfirmClickListener {
                                     finish();
-                                    startActivity(getIntent());
+                                    if(intEmpresa==11)
+                                    {
+                                        getViewDatosPersonales(idEncuesta,titulo,descripcion,strPermiteFirma,strPermiteDatoAdicional,intTiempo,email,intEmpresa)
+                                    }
+                                    else
+                                    {
+                                        startActivity(getIntent());
+                                    }
                                 }
                                 .show()
                             /*SweetAlertDialog(this@PreguntaActivity)
@@ -788,5 +806,20 @@ class PreguntaActivity : AppCompatActivity() {
             }
         }
 
+    }
+    private fun getViewDatosPersonales(idEncuesta: Int,titulo:String,descripcion:String,strPermiteFirma:String,strPermiteDatoAdicional:String,intTiempo: Int,email:String,idEmpresa: Int)
+    {
+        val datosPersonalesActivityIntent = Intent(this, DatosPersonalesActivity::class.java).apply()
+        {
+            putExtra("idEncuesta",idEncuesta)
+            putExtra("titulo",titulo)
+            putExtra("descripcion",descripcion)
+            putExtra("permiteFirma",strPermiteFirma)
+            putExtra("permiteDatoAdicional",strPermiteDatoAdicional)
+            putExtra("tiempoDeEspera",intTiempo)
+            putExtra("email",email)
+            putExtra("intEmpresa",idEmpresa)
+        }
+        startActivity(datosPersonalesActivityIntent)
     }
 }

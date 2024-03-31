@@ -130,7 +130,7 @@ class EncuestaActivity : AppCompatActivity() {
                             cardLinearLayout.addView(textVerPreguntas)
                             cardView.setOnClickListener {
                                 //1 Empresa Artefacta de prueba / Kennedy 11
-                                if(idEmpresa==11)
+                                if(idEmpresa==1)
                                 {
                                     getViewDatosPersonales(arrayItem.intIdEncuesta,arrayItem.strTitulo,arrayItem.strDescripcion,arrayItem.strPermiteFirma,arrayItem.strPermiteDatoAdicional,arrayItem.intTiempo,email,idEmpresa)
                                 }
@@ -197,7 +197,7 @@ class EncuestaActivity : AppCompatActivity() {
             putExtra("permiteDatoAdicional",strPermiteDatoAdicional)
             putExtra("tiempoDeEspera",intTiempo)
             putExtra("email",email)
-            putExtra("intEmpresa",idEmpresa)
+            putExtra("idEmpresa",idEmpresa)
 
         }
         startActivity(datosPersonalesActivityIntent)
@@ -213,7 +213,11 @@ class EncuestaActivity : AppCompatActivity() {
             putExtra("permiteDatoAdicional",strPermiteDatoAdicional)
             putExtra("tiempoDeEspera",intTiempo)
             putExtra("email",email)
-            putExtra("intEmpresa",idEmpresa)
+            putExtra("idEmpresa",idEmpresa)
+            //Datos del cliente
+            putExtra("correoClt","")
+            putExtra("generoClt","")
+            putExtra("fechaNacClt","")
         }
         startActivity(preguntaActivityIntent)
     }

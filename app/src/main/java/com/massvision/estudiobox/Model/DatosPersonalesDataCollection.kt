@@ -3,7 +3,8 @@ package com.massvision.estudiobox.Model
 data class DatosPersonalesDataCollectionItem(
     val intStatus:Int,
     val strMensaje:String,
-    val jsonDatosPersona:PersonaListItem
+    val jsonDatosPersona:PersonaListItem,
+    val strPoliticaAceptada:String,
 )
 data class PersonaListItem(
     val existe:String,

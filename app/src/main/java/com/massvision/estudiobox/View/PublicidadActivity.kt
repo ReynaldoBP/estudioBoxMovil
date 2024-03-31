@@ -77,7 +77,7 @@ class PublicidadActivity : AppCompatActivity() {
         binding = ActivityPublicidadBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val bundle= intent.extras
-        Log.e("Interceptor","actualizando imagen")
+        Log.d("Interceptor","actualizando imagen")
         val publicidadBase64 = bundle?.getString("publicidadBase64")
         val imageView: ImageView = findViewById(R.id.imageView) // Reemplaza con tu ImageView real
         if (publicidadBase64 != "") {

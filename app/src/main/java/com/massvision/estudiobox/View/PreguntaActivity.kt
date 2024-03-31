@@ -55,7 +55,11 @@ class PreguntaActivity : AppCompatActivity() {
         val permiteDatoAdicional = bundle?.getString("permiteDatoAdicional")
         val tiempoDeEspera = bundle?.getInt("tiempoDeEspera")
         val email = bundle?.getString("email")
-        val intEmpresa = bundle?.getInt("intEmpresa")
+        val idEmpresa = bundle?.getInt("idEmpresa")
+        //Datos del cliente
+        val correoClt = bundle?.getString("correoClt")
+        val generoClt = bundle?.getString("generoClt")
+        val fechaNacClt = bundle?.getString("fechaNacClt")
         Log.d("Interceptor","----------------------------")
         Log.d("Interceptor","idEncuesta: "+idEncuesta)
         Log.d("Interceptor","titulo: "+titulo)
@@ -64,12 +68,17 @@ class PreguntaActivity : AppCompatActivity() {
         Log.d("Interceptor","permiteDatoAdicional: "+permiteDatoAdicional)
         Log.d("Interceptor","tiempoDeEspera: "+tiempoDeEspera)
         Log.d("Interceptor","email: "+email)
-        Log.d("Interceptor","intEmpresa: "+intEmpresa)
+        Log.d("Interceptor","idEmpresa: "+idEmpresa)
+        Log.d("Interceptor","correoClt: "+correoClt)
+        Log.d("Interceptor","generoClt: "+generoClt)
+        Log.d("Interceptor","fechaNacClt: "+fechaNacClt)
         Log.d("Interceptor","----------------------------")
-        if (idEncuesta != null && titulo!= null && descripcion!= null && permiteFirma!= null && permiteDatoAdicional!= null && tiempoDeEspera!= null && email!= null&& intEmpresa!= null) {
+        if (idEncuesta != null && titulo!= null && descripcion!= null && permiteFirma!= null
+            && permiteDatoAdicional!= null && tiempoDeEspera!= null && email!= null&& idEmpresa!= null
+            && correoClt!= null && generoClt!= null && fechaNacClt!= null) {
             idEncuestaGlobal = idEncuesta
             getPublicidad(idEncuestaGlobal)
-            setup(idEncuesta,titulo,descripcion,permiteFirma,permiteDatoAdicional,tiempoDeEspera,email,intEmpresa)
+            setup(idEncuesta,titulo,descripcion,permiteFirma,permiteDatoAdicional,tiempoDeEspera,email,idEmpresa,correoClt,generoClt,fechaNacClt)
         }
         Log.d("Interceptor","idEncuesta: "+idEncuestaGlobal+" email:"+email)
 
@@ -94,7 +103,7 @@ class PreguntaActivity : AppCompatActivity() {
         inactivityTimer?.cancel()
         inactivityTimer?.start()
     }
-    private fun setup(idEncuesta:Int,titulo:String,descripcion:String,permiteFirma:String,permiteDatoAdicional:String,tiempoDeEspera: Int,email:String,intEmpresa:Int)
+    private fun setup(idEncuesta:Int,titulo:String,descripcion:String,permiteFirma:String,permiteDatoAdicional:String,tiempoDeEspera: Int,email:String,idEmpresa:Int,correoClt:String,generoClt:String,fechaNacClt:String)
     {
         title = "Preguntas"
         Log.d("Interceptor", "idEncuesta: "+idEncuesta)
@@ -547,6 +556,12 @@ class PreguntaActivity : AppCompatActivity() {
                             cardViewDA.addView(cardLinearLayoutDA)
                             preguntaLayoutSecundario.addView(cardViewDA)
                         }
+                        else if(correoClt!="" && generoClt!="" && fechaNacClt!="")
+                        {
+                            jsonDataRespuesta.addProperty("strCorreo",correoClt)
+                            jsonDataRespuesta.addProperty("strGenero", generoClt)
+                            jsonDataRespuesta.addProperty("strEdad",fechaNacClt)
+                        }
                         jsonDataRespuesta.addProperty("strUsrSesion", email)
                         //Validamos si debemos presentar la firma
                         //if(titulo == "Satisfacción paciente por MSP")
@@ -605,7 +620,7 @@ class PreguntaActivity : AppCompatActivity() {
                             }
                             val jsonObjectRespuesta = JsonObject()
                             jsonObjectRespuesta.add("data",jsonDataRespuesta)
-                            createRespuesta(jsonObjectRespuesta, idEncuestaGlobal,titulo,descripcion,permiteFirma,permiteDatoAdicional,tiempoDeEspera,email,intEmpresa)
+                            createRespuesta(jsonObjectRespuesta, idEncuestaGlobal,titulo,descripcion,permiteFirma,permiteDatoAdicional,tiempoDeEspera,email,idEmpresa)
                         }
                     }
                     else if(response.body()?.intStatus==204)
@@ -646,7 +661,7 @@ class PreguntaActivity : AppCompatActivity() {
             }
         }
     }
-    private fun createRespuesta(jsonObject:JsonObject,idEncuesta: Int,titulo:String,descripcion:String,strPermiteFirma:String,strPermiteDatoAdicional:String,intTiempo: Int,email:String,intEmpresa:Int)
+    private fun createRespuesta(jsonObject:JsonObject,idEncuesta: Int,titulo:String,descripcion:String,strPermiteFirma:String,strPermiteDatoAdicional:String,intTiempo: Int,email:String,idEmpresa:Int)
     {
         try {
             Log.d("Interceptor", "Request Respuesta: " + jsonObject)
@@ -671,9 +686,9 @@ class PreguntaActivity : AppCompatActivity() {
                                 .setConfirmText("Aceptar")
                                 .setConfirmClickListener {
                                     finish();
-                                    if(intEmpresa==11)
+                                    if(idEmpresa==1)
                                     {
-                                        getViewDatosPersonales(idEncuesta,titulo,descripcion,strPermiteFirma,strPermiteDatoAdicional,intTiempo,email,intEmpresa)
+                                        getViewDatosPersonales(idEncuesta,titulo,descripcion,strPermiteFirma,strPermiteDatoAdicional,intTiempo,email,idEmpresa)
                                     }
                                     else
                                     {
@@ -731,12 +746,13 @@ class PreguntaActivity : AppCompatActivity() {
     }
     private fun getPublicidad(idEncuesta:Int)
     {
+        Log.d("Interceptor","-------getPublicidad-------")
         publicidadBase64 = ""
-        val pDialog = SweetAlertDialog(this@PreguntaActivity, SweetAlertDialog.PROGRESS_TYPE)
+        /*val pDialog = SweetAlertDialog(this@PreguntaActivity, SweetAlertDialog.PROGRESS_TYPE)
         pDialog.progressHelper.barColor = Color.parseColor("#A5DC86")
         pDialog.titleText = "Cargando ..."
         pDialog.setCancelable(true)
-        pDialog.show()
+        pDialog.show()*/
         //consumo ApiRest
         Log.d("Interceptor","consumo ApiRest")
         val apiService = RetrofitHelper.getInstance().create(ApiService::class.java)
@@ -749,7 +765,7 @@ class PreguntaActivity : AppCompatActivity() {
             try {
                 val responsePublicidad = apiService.getPublicidad(jsonObjectPublicidad)
                 if (responsePublicidad.isSuccessful()) {
-                    pDialog.hide()
+                    //pDialog.hide()
                     Log.d("Interceptor", "resultado del getPublicidad isSuccessful")
                     Log.d("Interceptor", "Response: " + responsePublicidad.body().toString())
                     if (responsePublicidad.body()?.intStatus == 200 && responsePublicidad.body()?.arrayPublicidad?.arrayArchivos?.isNotEmpty() == true)
@@ -765,14 +781,14 @@ class PreguntaActivity : AppCompatActivity() {
                     }
                 } else {
                     publicidadBase64 = ""
-                    pDialog.hide()
+                    //pDialog.hide()
                     SweetAlertDialog(this@PreguntaActivity, SweetAlertDialog.ERROR_TYPE)
                         .setTitleText("Error")
                         .setContentText("Ha ocurrido un error, al tratar de realizar conexión con el servidor")
                         .show()
                 }
             } catch (Ex: Exception) {
-                pDialog.hide()
+                //pDialog.hide()
                 SweetAlertDialog(this@PreguntaActivity, SweetAlertDialog.ERROR_TYPE)
                     .setTitleText("Error")
                     .setContentText(Ex.localizedMessage)
@@ -784,6 +800,7 @@ class PreguntaActivity : AppCompatActivity() {
     }
     private fun getViewPublicidad()
     {
+        Log.d("Interceptor","getViewPublicidad")
         inactivityTimer?.cancel()
         val am = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         val tasks = am.getRunningTasks(Int.MAX_VALUE)
@@ -791,16 +808,22 @@ class PreguntaActivity : AppCompatActivity() {
             val topActivity = tasks[0].topActivity
             if (topActivity != null) {
                 if (topActivity.packageName == packageName && topActivity.className == PublicidadActivity::class.java.name) {
-                    Log.e("Interceptor","La actividad PublicidadActivity está en uso")
+                    Log.d("Interceptor","La actividad PublicidadActivity está en uso")
                 }
                 else
                 {
-                    val publicidadActivityIntent = Intent(this, PublicidadActivity::class.java).apply()
+                    Log.d("Interceptor","publicidadBase64: "+publicidadBase64)
+                    if(publicidadBase64!="")
                     {
-                        putExtra("publicidadBase64",publicidadBase64)
+                        Log.d("Interceptor","Inicializo la Actividad Publicidad")
+                        val publicidadActivityIntent = Intent(this, PublicidadActivity::class.java).apply()
+                        {
+                            putExtra("publicidadBase64",publicidadBase64)
+                        }
+                        startActivity(publicidadActivityIntent)
                     }
-                    startActivity(publicidadActivityIntent)
-                    Log.e("Interceptor","La actividad PublicidadActivity NO está en uso")
+                    Log.d("Interceptor","La actividad PublicidadActivity NO está en uso")
+                    Log.d("Interceptor","idEncuestaGlobal: "+idEncuestaGlobal)
                     getPublicidad(idEncuestaGlobal)
                 }
             }
@@ -809,6 +832,7 @@ class PreguntaActivity : AppCompatActivity() {
     }
     private fun getViewDatosPersonales(idEncuesta: Int,titulo:String,descripcion:String,strPermiteFirma:String,strPermiteDatoAdicional:String,intTiempo: Int,email:String,idEmpresa: Int)
     {
+        Log.d("Interceptor","getViewDatosPersonales")
         val datosPersonalesActivityIntent = Intent(this, DatosPersonalesActivity::class.java).apply()
         {
             putExtra("idEncuesta",idEncuesta)
@@ -818,7 +842,7 @@ class PreguntaActivity : AppCompatActivity() {
             putExtra("permiteDatoAdicional",strPermiteDatoAdicional)
             putExtra("tiempoDeEspera",intTiempo)
             putExtra("email",email)
-            putExtra("intEmpresa",idEmpresa)
+            putExtra("idEmpresa",idEmpresa)
         }
         startActivity(datosPersonalesActivityIntent)
     }

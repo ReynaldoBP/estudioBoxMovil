@@ -23,5 +23,8 @@ interface ApiService {
     suspend fun getDatosPersonales(@Body jsonObject: JsonObject):Response<DatosPersonalesDataCollectionItem>
     @POST("/apiMovil/getPublicidad")
     suspend fun getPublicidad(@Body jsonObject: JsonObject):Response<PublicidadDataCollection>
-
+    @POST("/apiWeb/getTratamientoDP")
+    suspend fun getTratamientoDP(@Body jsonObject: JsonObject):Response<TratamientoDPDataCollectionItem>
+    @POST("/apiMovil/createTratamientoDP")
+    suspend fun createTratamientoDP(@Body jsonObject: JsonObject):Response<RespuestaDataCollectionItem>
 }

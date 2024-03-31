@@ -22,23 +22,31 @@ class DatosPersonalesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_datos_personales)
         val bundle= intent.extras
-        //setup(email?:"",provider?:"")
         val idEncuesta = bundle?.getInt("idEncuesta")
         val titulo = bundle?.getString("titulo")
         val descripcion = bundle?.getString("descripcion")
         val permiteFirma = bundle?.getString("permiteFirma")
         val permiteDatoAdicional = bundle?.getString("permiteDatoAdicional")
         val tiempoDeEspera = bundle?.getInt("tiempoDeEspera")
-        val intEmpresa = bundle?.getInt("intEmpresa")
+        val idEmpresa = bundle?.getInt("idEmpresa")
         val email = bundle?.getString("email")
-        if (idEncuesta != null && titulo!= null && descripcion!= null && permiteFirma!= null && permiteDatoAdicional!= null && tiempoDeEspera!= null && email!= null && intEmpresa!= null) {
-            setup(idEncuesta,titulo,descripcion,permiteFirma,permiteDatoAdicional,tiempoDeEspera,email,intEmpresa)
+        if (idEncuesta != null && titulo!= null && descripcion!= null && permiteFirma!= null && permiteDatoAdicional!= null && tiempoDeEspera!= null && email!= null && idEmpresa!= null) {
+            val jsonParametrosTratamiento = JsonObject()
+            jsonParametrosTratamiento.addProperty("idEncuesta", idEncuesta)
+            jsonParametrosTratamiento.addProperty("titulo", titulo)
+            jsonParametrosTratamiento.addProperty("descripcion", descripcion)
+            jsonParametrosTratamiento.addProperty("permiteFirma", permiteFirma)
+            jsonParametrosTratamiento.addProperty("permiteDatoAdicional", permiteDatoAdicional)
+            jsonParametrosTratamiento.addProperty("tiempoDeEspera", tiempoDeEspera)
+            jsonParametrosTratamiento.addProperty("email", email)
+            jsonParametrosTratamiento.addProperty("idEmpresa", idEmpresa)
+            Log.d("Interceptor",jsonParametrosTratamiento.toString())
+            setup(jsonParametrosTratamiento)
         }
-
     }
-    private fun setup(idEncuesta:Int,titulo:String,descripcion:String,permiteFirma:String,permiteDatoAdicional:String,tiempoDeEspera:Int,email:String,intEmpresa:Int) {
+    private fun setup(jsonParametros: JsonObject)
+    {
         title = "Datos Personales"
-        Log.d("Interceptor", "idEncuesta: " + idEncuesta)
         val jsonData = JsonObject()
         val generalLayout = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
@@ -73,13 +81,11 @@ class DatosPersonalesActivity : AppCompatActivity() {
                 Log.d("Interceptor",arrayPais[position].toString())
                 if(arrayPais[position].toString() == "Ecuador")
                 {
-                    Log.d("Interceptor","IF")
                     arrayTipoDocumento = ArrayList<String>()
                     arrayTipoDocumento.add("CED-CÉDULA DE CIUDADANÍA")
                 }
                 else
                 {
-                    Log.d("Interceptor","Else")
                     arrayTipoDocumento = ArrayList<String>()
                     arrayTipoDocumento.add("Seleccione su Tipo de Documento")
                     arrayTipoDocumento.add("CTR-CARNET DE REFUGIADO")
@@ -109,7 +115,6 @@ class DatosPersonalesActivity : AppCompatActivity() {
                         )
                     }
                 }
-                ///
                 jsonData.addProperty(
                     "strPais",
                     arrayPais[position].toString()
@@ -127,7 +132,7 @@ class DatosPersonalesActivity : AppCompatActivity() {
                 pDialog.show()
                 val apiService = RetrofitHelper.getInstance().create(ApiService::class.java)
 
-                jsonData.addProperty("intIdEncuesta", idEncuesta)
+                jsonData.addProperty("intIdEncuesta", jsonParametros.get("idEncuesta").asInt)
                 jsonData.addProperty("intNumeroDocumento", identificacionEditTextNumber.text.toString())
                 jsonData.addProperty("strUsrSesion", "appMovil")
                 val jsonObject = JsonObject()
@@ -142,9 +147,20 @@ class DatosPersonalesActivity : AppCompatActivity() {
                             Log.d("Interceptor","Response: "+response.body().toString())
                             //if(response.body()?.intStatus==200 && response.body()?.arrayEmpresa?.isNotEmpty() == true)
                             if(response.body()?.intStatus==200 && response.body()?.jsonDatosPersona?.existe == "S") {
-                                val nombre = response.body()!!.jsonDatosPersona.nombres.toString()
-                                val ape_pat = response.body()!!.jsonDatosPersona.ape_pat.toString()
-                                val ape_mat = response.body()!!.jsonDatosPersona.ape_mat.toString()
+                                val politicaAceptada = response.body()!!.strPoliticaAceptada.toString()
+                                val nombre   = response.body()!!.jsonDatosPersona.nombres.toString()
+                                val ape_pat  = response.body()!!.jsonDatosPersona.ape_pat.toString()
+                                val ape_mat  = response.body()!!.jsonDatosPersona.ape_mat.toString()
+                                val correo   = response.body()!!.jsonDatosPersona.email.toString()
+                                var genero   = response.body()!!.jsonDatosPersona.sexo.toString()
+                                var fechaNac = response.body()!!.jsonDatosPersona.fechanac.toString()
+                                genero = when (genero) {
+                                    "M" -> "Masculino"
+                                    "F" -> "Femenino"
+                                    else -> "Sin Género"
+                                }
+                                val arrayFechaNac = fechaNac.split("-")
+                                fechaNac = arrayFechaNac[0]
                                 val nombreCompleto = nombre+" "+ape_pat+" "+ape_mat
                                 var mensaje = "¿Usted es el paciente: "+nombreCompleto+" ?"
                                 if (response.body()?.jsonDatosPersona?.habitacion?.toString()?.isNotEmpty() == true)
@@ -158,10 +174,19 @@ class DatosPersonalesActivity : AppCompatActivity() {
                                     .setTitleText(mensaje)
                                     .setConfirmText("Aceptar")
                                     .setConfirmClickListener { sDialog -> sDialog.dismissWithAnimation()
-                                        //Que Hacer
-                                        Log.d("Interceptor","Confirmado")
-                                        //private fun getViewPregunta(idEncuesta: Int,titulo:String,descripcion:String,strPermiteFirma:String,strPermiteDatoAdicional:String,intTiempo: Int,email:String)
-                                        getViewPregunta(idEncuesta,titulo,descripcion,permiteFirma,permiteDatoAdicional,tiempoDeEspera,email,intEmpresa)
+                                        Log.d("Interceptor","Usuario confirmó sus datos")
+                                        jsonParametros.addProperty("identificacionClt", identificacionEditTextNumber.text.toString())
+                                        jsonParametros.addProperty("correoClt", correo)
+                                        jsonParametros.addProperty("generoClt", genero)
+                                        jsonParametros.addProperty("fechaNacClt", fechaNac)
+                                        if(politicaAceptada=="Si")
+                                        {
+                                            getViewPregunta(jsonParametros)
+                                        }
+                                        else
+                                        {
+                                            getViewTratamientoDP(jsonParametros)
+                                        }
                                     }
                                     .setCancelButton(
                                         "Cancelar"
@@ -210,19 +235,50 @@ class DatosPersonalesActivity : AppCompatActivity() {
             }
         }
     }
-    private fun getViewPregunta(idEncuesta: Int,titulo:String,descripcion:String,strPermiteFirma:String,strPermiteDatoAdicional:String,intTiempo: Int,email:String,intEmpresa:Int)
+    private fun getViewTratamientoDP(jsonParametros: JsonObject)
     {
+        Log.d("Interceptor","----------------------")
+        Log.d("Interceptor","--getViewTratamientoDP--")
+        Log.d("Interceptor",jsonParametros.toString())
+        val tratamientoActivityIntent = Intent(this, TratamientoDPActivity::class.java).apply()
+        {
+            Log.d("Interceptor","preparo datos")
+            putExtra("idEncuesta",jsonParametros.get("idEncuesta").asInt)
+            putExtra("titulo",jsonParametros.get("titulo").asString)
+            putExtra("descripcion",jsonParametros.get("descripcion").asString)
+            putExtra("permiteFirma",jsonParametros.get("permiteFirma").asString)
+            putExtra("permiteDatoAdicional",jsonParametros.get("permiteDatoAdicional").asString)
+            putExtra("tiempoDeEspera",jsonParametros.get("tiempoDeEspera").asInt)
+            putExtra("email",jsonParametros.get("email").asString)
+            putExtra("idEmpresa",jsonParametros.get("idEmpresa").asInt)
+            //Datos del cliente
+            putExtra("identificacionClt",jsonParametros.get("identificacionClt").asString)
+            putExtra("correoClt",jsonParametros.get("correoClt").asString)
+            putExtra("generoClt",jsonParametros.get("generoClt").asString)
+            putExtra("fechaNacClt",jsonParametros.get("fechaNacClt").asString)
+        }
+        Log.d("Interceptor","envio datos")
+        startActivity(tratamientoActivityIntent)
+    }
+    private fun getViewPregunta(jsonParametros: JsonObject)
+    {
+        Log.d("Interceptor","----------------------")
+        Log.d("Interceptor","--getViewPregunta--")
+        Log.d("Interceptor",jsonParametros.toString())
         val preguntaActivityIntent = Intent(this, PreguntaActivity::class.java).apply()
         {
-            putExtra("idEncuesta",idEncuesta)
-            putExtra("titulo",titulo)
-            putExtra("descripcion",descripcion)
-            putExtra("permiteFirma",strPermiteFirma)
-            putExtra("permiteDatoAdicional",strPermiteDatoAdicional)
-            putExtra("tiempoDeEspera",intTiempo)
-            putExtra("email",email)
-            putExtra("intEmpresa",intEmpresa)
-
+            putExtra("idEncuesta",jsonParametros.get("idEncuesta").asInt)
+            putExtra("titulo",jsonParametros.get("titulo").asString)
+            putExtra("descripcion",jsonParametros.get("descripcion").asString)
+            putExtra("permiteFirma",jsonParametros.get("permiteFirma").asString)
+            putExtra("permiteDatoAdicional",jsonParametros.get("permiteDatoAdicional").asString)
+            putExtra("tiempoDeEspera",jsonParametros.get("tiempoDeEspera").asInt)
+            putExtra("email",jsonParametros.get("email").asString)
+            putExtra("idEmpresa",jsonParametros.get("idEmpresa").asInt)
+            //Datos del cliente
+            putExtra("correoClt",jsonParametros.get("correoClt").asString)
+            putExtra("generoClt",jsonParametros.get("generoClt").asString)
+            putExtra("fechaNacClt",jsonParametros.get("fechaNacClt").asString)
         }
         startActivity(preguntaActivityIntent)
     }

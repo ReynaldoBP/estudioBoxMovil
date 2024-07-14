@@ -52,10 +52,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:backgroundTint="#0000FF"
-                android:textColor="#FFFFFF"
-                android:text="Empezar Encuesta" />
-
+                android:backgroundTint="@color/main_green_color"
+                android:text="Empezar Encuesta"
+                android:textColor="#FFFFFF" />
         </LinearLayout>
     </FrameLayout>
 

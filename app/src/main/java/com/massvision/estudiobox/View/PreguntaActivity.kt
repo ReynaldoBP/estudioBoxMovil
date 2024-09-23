@@ -236,7 +236,68 @@ class PreguntaActivity : AppCompatActivity() {
                                     cardLinearLayoutPreguntas.addView(ratingBar)
                                 }
                                 if (arrayItem.intCantidadEstrellas == 10){
-                                    val respIpnButton = Button(this@PreguntaActivity)
+                                    // Crear un GridLayout para organizar los botones y números en una fila
+                                    val gridLayout = GridLayout(this@PreguntaActivity)
+                                    gridLayout.layoutParams = generalLayout
+                                    gridLayout.columnCount = 11 // Establecer 11 columnas para los 11 números (0 al 10)
+                                    gridLayout.orientation = GridLayout.HORIZONTAL // Asegurar que sea horizontal
+
+                                    // Lista para almacenar los RadioButtons y gestionar la selección
+                                    val radioButtonList = mutableListOf<RadioButton>()
+
+                                    // Crear RadioButtons del 0 al 10 en el GridLayout
+                                    for (i in 0..10) {
+                                        // Crear un LinearLayout vertical para organizar botón y número
+                                        val verticalLayout = LinearLayout(this@PreguntaActivity)
+                                        verticalLayout.orientation = LinearLayout.VERTICAL
+                                        verticalLayout.layoutParams = GridLayout.LayoutParams()
+                                        verticalLayout.gravity = Gravity.CENTER // Centrar todo dentro de cada celda
+
+                                        // Crear un RadioButton
+                                        val radioButton = RadioButton(this@PreguntaActivity)
+                                        radioButton.id = View.generateViewId() // Generar un ID único para cada botón
+                                        radioButton.layoutParams = LinearLayout.LayoutParams(
+                                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                                            LinearLayout.LayoutParams.WRAP_CONTENT
+                                        )
+                                        radioButton.gravity = Gravity.CENTER // Centrar el botón
+
+                                        // Añadir el RadioButton a la lista
+                                        radioButtonList.add(radioButton)
+
+                                        // Añadir el RadioButton al LinearLayout vertical
+                                        verticalLayout.addView(radioButton)
+
+                                        // Crear un TextView para mostrar el número debajo del botón
+                                        val numberTextView = TextView(this@PreguntaActivity)
+                                        numberTextView.text = i.toString()
+                                        numberTextView.gravity = Gravity.CENTER // Centrar el número
+                                        numberTextView.layoutParams = LinearLayout.LayoutParams(
+                                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                                            LinearLayout.LayoutParams.WRAP_CONTENT
+                                        )
+
+                                        // Añadir el TextView al LinearLayout vertical
+                                        verticalLayout.addView(numberTextView)
+
+                                        // Añadir el LinearLayout vertical al GridLayout
+                                        gridLayout.addView(verticalLayout)
+
+                                        // Asignar OnClickListener a cada RadioButton
+                                        radioButton.setOnClickListener {
+                                            // Desmarcar todos los RadioButtons al seleccionar uno
+                                            radioButtonList.forEach { it.isChecked = false }
+                                            // Marcar el botón actual
+                                            radioButton.isChecked = true
+                                            // Actualizar el JSON con la respuesta seleccionada
+                                            jsonPregunta.addProperty(arrayItem.intIdPregunta.toString(), numberTextView.text.toString())
+                                        }
+                                    }
+                                    // Añadir el GridLayout al layout principal
+                                    cardLinearLayoutPreguntas.addView(gridLayout)
+                                    //jsonPregunta.addProperty(arrayItem.intIdPregunta.toString(), selectedValue.toString())
+
+                                    /*val respIpnButton = Button(this@PreguntaActivity)
                                     respIpnButton.setLayoutParams(generalLayout)
                                     respIpnButton.setText("0")
                                     respIpnButton.setBackgroundColor(Color.TRANSPARENT)
@@ -279,7 +340,7 @@ class PreguntaActivity : AppCompatActivity() {
                                             )
                                         }
                                     })
-                                    cardLinearLayoutPreguntas.addView(ipnSeekBar)
+                                    cardLinearLayoutPreguntas.addView(ipnSeekBar)*/
                                 }
                             }
                             else if(arrayItem.strTipoOpcionRespuesta == "DESPLEGABLE") {
@@ -686,7 +747,7 @@ class PreguntaActivity : AppCompatActivity() {
                                 .setConfirmText("Aceptar")
                                 .setConfirmClickListener {
                                     finish();
-                                    if(idEmpresa==1)
+                                    if(idEmpresa==100)
                                     {
                                         getViewDatosPersonales(idEncuesta,titulo,descripcion,strPermiteFirma,strPermiteDatoAdicional,intTiempo,email,idEmpresa)
                                     }

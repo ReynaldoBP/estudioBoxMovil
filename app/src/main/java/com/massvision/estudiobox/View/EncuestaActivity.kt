@@ -130,7 +130,7 @@ class EncuestaActivity : AppCompatActivity() {
                             cardLinearLayout.addView(textVerPreguntas)
                             cardView.setOnClickListener {
                                 //1 Empresa Artefacta de prueba / Kennedy 11
-                                if(idEmpresa==1)
+                                if(idEmpresa==100)
                                 {
                                     getViewDatosPersonales(arrayItem.intIdEncuesta,arrayItem.strTitulo,arrayItem.strDescripcion,arrayItem.strPermiteFirma,arrayItem.strPermiteDatoAdicional,arrayItem.intTiempo,email,idEmpresa)
                                 }

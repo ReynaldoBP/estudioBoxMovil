@@ -7,14 +7,14 @@ plugins {
 
 android {
     namespace 'com.massvision.estudiobox'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.massvision.estudiobox"
         minSdk 21
-        targetSdk 33
-        versionCode 7
-        versionName "1.1"
+        targetSdk 34
+        versionCode 9
+        versionName "9"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -34,6 +34,9 @@ android {
     }
     buildFeatures {
         viewBinding true
+    }
+    lint {
+        baseline = file("lint-baseline.xml")
     }
 }
 

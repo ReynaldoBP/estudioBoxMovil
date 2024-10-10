@@ -39,6 +39,9 @@ class TratamientoDPActivity : AppCompatActivity() {
         val descripcion = bundle?.getString("descripcion")
         val permiteFirma = bundle?.getString("permiteFirma")
         val permiteDatoAdicional = bundle?.getString("permiteDatoAdicional")
+        val permiteCorreo = bundle?.getString("permiteCorreo")
+        val permiteAnio = bundle?.getString("permiteAnio")
+        val permiteGenero = bundle?.getString("permiteGenero")
         val tiempoDeEspera = bundle?.getInt("tiempoDeEspera")
         val idEmpresa = bundle?.getInt("idEmpresa")
         val email = bundle?.getString("email")
@@ -48,7 +51,7 @@ class TratamientoDPActivity : AppCompatActivity() {
         val generoClt = bundle?.getString("generoClt")
         val fechaNacClt = bundle?.getString("fechaNacClt")
         if (idEncuesta != null && titulo!= null && descripcion!= null && permiteFirma!= null
-            && permiteDatoAdicional!= null && tiempoDeEspera!= null && email!= null && idEmpresa!= null
+            && permiteDatoAdicional!= null && permiteCorreo!= null && permiteAnio!= null && permiteGenero!= null && tiempoDeEspera!= null && email!= null && idEmpresa!= null
             && identificacionClt != null && correoClt!= null && generoClt!= null && fechaNacClt!= null) {
             val jsonParametros = JsonObject()
             jsonParametros.addProperty("idEncuesta", idEncuesta)
@@ -56,6 +59,9 @@ class TratamientoDPActivity : AppCompatActivity() {
             jsonParametros.addProperty("descripcion", descripcion)
             jsonParametros.addProperty("permiteFirma", permiteFirma)
             jsonParametros.addProperty("permiteDatoAdicional", permiteDatoAdicional)
+            jsonParametros.addProperty("permiteCorreo", permiteCorreo)
+            jsonParametros.addProperty("permiteAnio", permiteAnio)
+            jsonParametros.addProperty("permiteGenero", permiteGenero)
             jsonParametros.addProperty("tiempoDeEspera", tiempoDeEspera)
             jsonParametros.addProperty("email", email)
             jsonParametros.addProperty("idEmpresa", idEmpresa)
@@ -323,6 +329,9 @@ class TratamientoDPActivity : AppCompatActivity() {
             putExtra("descripcion",jsonParametros.get("descripcion").asString)
             putExtra("permiteFirma",jsonParametros.get("permiteFirma").asString)
             putExtra("permiteDatoAdicional",jsonParametros.get("permiteDatoAdicional").asString)
+            putExtra("permiteCorreo",jsonParametros.get("permiteCorreo").asString)
+            putExtra("permiteAnio",jsonParametros.get("permiteAnio").asString)
+            putExtra("permiteGenero",jsonParametros.get("permiteGenero").asString)
             putExtra("tiempoDeEspera",jsonParametros.get("tiempoDeEspera").asInt)
             putExtra("email",jsonParametros.get("email").asString)
             putExtra("idEmpresa",jsonParametros.get("idEmpresa").asInt)

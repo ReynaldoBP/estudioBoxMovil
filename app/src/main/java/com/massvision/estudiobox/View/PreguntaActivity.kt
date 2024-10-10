@@ -53,6 +53,9 @@ class PreguntaActivity : AppCompatActivity() {
         val descripcion = bundle?.getString("descripcion")
         val permiteFirma = bundle?.getString("permiteFirma")
         val permiteDatoAdicional = bundle?.getString("permiteDatoAdicional")
+        val permiteCorreo = bundle?.getString("permiteCorreo")
+        val permiteAnio = bundle?.getString("permiteAnio")
+        val permiteGenero = bundle?.getString("permiteGenero")
         val tiempoDeEspera = bundle?.getInt("tiempoDeEspera")
         val email = bundle?.getString("email")
         val idEmpresa = bundle?.getInt("idEmpresa")
@@ -66,6 +69,9 @@ class PreguntaActivity : AppCompatActivity() {
         Log.d("Interceptor","descripcion: "+descripcion)
         Log.d("Interceptor","permiteFirma: "+permiteFirma)
         Log.d("Interceptor","permiteDatoAdicional: "+permiteDatoAdicional)
+        Log.d("Interceptor","permiteCorreo: "+permiteCorreo)
+        Log.d("Interceptor","permiteAnio: "+permiteAnio)
+        Log.d("Interceptor","permiteGenero: "+permiteGenero)
         Log.d("Interceptor","tiempoDeEspera: "+tiempoDeEspera)
         Log.d("Interceptor","email: "+email)
         Log.d("Interceptor","idEmpresa: "+idEmpresa)
@@ -74,11 +80,12 @@ class PreguntaActivity : AppCompatActivity() {
         Log.d("Interceptor","fechaNacClt: "+fechaNacClt)
         Log.d("Interceptor","----------------------------")
         if (idEncuesta != null && titulo!= null && descripcion!= null && permiteFirma!= null
-            && permiteDatoAdicional!= null && tiempoDeEspera!= null && email!= null&& idEmpresa!= null
+            && permiteDatoAdicional!= null&& permiteAnio!= null&& permiteGenero!= null
+            && permiteCorreo!= null && tiempoDeEspera!= null && email!= null&& idEmpresa!= null
             && correoClt!= null && generoClt!= null && fechaNacClt!= null) {
             idEncuestaGlobal = idEncuesta
             getPublicidad(idEncuestaGlobal)
-            setup(idEncuesta,titulo,descripcion,permiteFirma,permiteDatoAdicional,tiempoDeEspera,email,idEmpresa,correoClt,generoClt,fechaNacClt)
+            setup(idEncuesta,titulo,descripcion,permiteFirma,permiteDatoAdicional,permiteCorreo,permiteAnio,permiteGenero,tiempoDeEspera,email,idEmpresa,correoClt,generoClt,fechaNacClt)
         }
         Log.d("Interceptor","idEncuesta: "+idEncuestaGlobal+" email:"+email)
 
@@ -103,7 +110,7 @@ class PreguntaActivity : AppCompatActivity() {
         inactivityTimer?.cancel()
         inactivityTimer?.start()
     }
-    private fun setup(idEncuesta:Int,titulo:String,descripcion:String,permiteFirma:String,permiteDatoAdicional:String,tiempoDeEspera: Int,email:String,idEmpresa:Int,correoClt:String,generoClt:String,fechaNacClt:String)
+    private fun setup(idEncuesta:Int,titulo:String,descripcion:String,permiteFirma:String,permiteDatoAdicional:String,permiteCorreo:String,permiteAnio:String,permiteGenero:String,tiempoDeEspera: Int,email:String,idEmpresa:Int,correoClt:String,generoClt:String,fechaNacClt:String)
     {
         title = "Preguntas"
         Log.d("Interceptor", "idEncuesta: "+idEncuesta)
@@ -481,139 +488,145 @@ class PreguntaActivity : AppCompatActivity() {
                                 Typeface.BOLD
                             )// Establecer estilo negrita
                             cardLinearLayoutDA.addView(textDatosAdicionales)
-                            //Correo electronico del encuestado
-                            val textCorreo = EditText(this@PreguntaActivity)
-                            textCorreo.setInputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
-                            textCorreo.setHint("Ingrese su Correo Electrónico")
-                            textCorreo.addTextChangedListener {
-                                jsonDataRespuesta.addProperty(
-                                    "strCorreo",
-                                    textCorreo.getText().toString()
-                                )
-                                jsonDataRespuesta.addProperty(
-                                    "strNombre",
-                                    textCorreo.getText().toString().split("@")[0]
-                                )
+                            if(permiteCorreo=="Si") {
+                                //Correo electronico del encuestado
+                                val textCorreo = EditText(this@PreguntaActivity)
+                                textCorreo.setInputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
+                                textCorreo.setHint("Ingrese su Correo Electrónico")
+                                textCorreo.addTextChangedListener {
+                                    jsonDataRespuesta.addProperty(
+                                        "strCorreo",
+                                        textCorreo.getText().toString()
+                                    )
+                                    jsonDataRespuesta.addProperty(
+                                        "strNombre",
+                                        textCorreo.getText().toString().split("@")[0]
+                                    )
+                                }
+                                //textCorreo.setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL)
+                                textCorreo.setGravity(Gravity.LEFT)
+                                textCorreo.setLayoutParams(generalLayout)
+                                cardLinearLayoutDA.addView(textCorreo)
                             }
-                            //textCorreo.setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL)
-                            textCorreo.setGravity(Gravity.LEFT)
-                            textCorreo.setLayoutParams(generalLayout)
-                            cardLinearLayoutDA.addView(textCorreo)
-                            //Fecha de nacimiento del encuestado
-                            val textFechaNac = EditText(this@PreguntaActivity)
-                            textFechaNac.setInputType(InputType.TYPE_DATETIME_VARIATION_DATE)
-                            textFechaNac.setHint("Ingrese su Año de Nacimiento")
-                            textFechaNac.setKeyListener(DigitsKeyListener.getInstance("0123456789"));
-                            /*textFechaNac.isClickable=true
+                            if(permiteAnio=="Si") {
+                                //Fecha de nacimiento del encuestado
+                                val textFechaNac = EditText(this@PreguntaActivity)
+                                textFechaNac.setInputType(InputType.TYPE_DATETIME_VARIATION_DATE)
+                                textFechaNac.setHint("Ingrese su Año de Nacimiento")
+                                textFechaNac.setKeyListener(DigitsKeyListener.getInstance("0123456789"));
+                                /*textFechaNac.isClickable=true
                             textFechaNac.isFocusable=false
                             textFechaNac.setOnClickListener{
                                 val datePicker = DatePickerFragment { day, month, year -> textFechaNac.setText("$year-$month-$day") }
                                 datePicker.show(supportFragmentManager, "datePicker")
                             }*/
-                            textFechaNac.addTextChangedListener {
-                                jsonDataRespuesta.addProperty(
-                                    "strEdad",
-                                    textFechaNac.getText().toString()
-                                )
+                                textFechaNac.addTextChangedListener {
+                                    jsonDataRespuesta.addProperty(
+                                        "strEdad",
+                                        textFechaNac.getText().toString()
+                                    )
+                                }
+                                //textFechaNac.setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL)
+                                textFechaNac.setGravity(Gravity.LEFT)
+
+                                textFechaNac.setLayoutParams(generalLayout)
+                                cardLinearLayoutDA.addView(textFechaNac)
                             }
-                            //textFechaNac.setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL)
-                            textFechaNac.setGravity(Gravity.LEFT)
+                            if(permiteGenero=="Si") {
+                                //ComboBox Genero del encuestado
+                                val arrayGenero = ArrayList<String>()
+                                arrayGenero.add("Seleccione su Género")
+                                arrayGenero.add("Masculino")
+                                arrayGenero.add("Femenino")
+                                arrayGenero.add("Otros")
+                                val spinnerGenero = Spinner(this@PreguntaActivity)
+                                val spinnerArrayAdapter = ArrayAdapter(
+                                    this@PreguntaActivity,
+                                    android.R.layout.simple_spinner_dropdown_item,
+                                    arrayGenero
+                                )
+                                spinnerGenero.adapter = spinnerArrayAdapter
+                                spinnerGenero.onItemSelectedListener =
+                                    object : AdapterView.OnItemSelectedListener {
+                                        //((TextView) adapterView.getChildAt(0)).setGravity(Gravity.CENTER)
+                                        override fun onNothingSelected(parent: AdapterView<*>?) {
+                                            Toast.makeText(
+                                                this@PreguntaActivity,
+                                                "onNothingSelected",
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
 
-                            textFechaNac.setLayoutParams(generalLayout)
-                            cardLinearLayoutDA.addView(textFechaNac)
-                            //ComboBox Genero del encuestado
-                            val arrayGenero = ArrayList<String>()
-                            arrayGenero.add("Seleccione su Género")
-                            arrayGenero.add("Masculino")
-                            arrayGenero.add("Femenino")
-                            arrayGenero.add("Otros")
-                            val spinnerGenero = Spinner(this@PreguntaActivity)
-                            val spinnerArrayAdapter = ArrayAdapter(
-                                this@PreguntaActivity,
-                                android.R.layout.simple_spinner_dropdown_item,
-                                arrayGenero
-                            )
-                            spinnerGenero.adapter = spinnerArrayAdapter
-                            spinnerGenero.onItemSelectedListener =
-                                object : AdapterView.OnItemSelectedListener {
-                                    //((TextView) adapterView.getChildAt(0)).setGravity(Gravity.CENTER)
-                                    override fun onNothingSelected(parent: AdapterView<*>?) {
-                                        Toast.makeText(
-                                            this@PreguntaActivity,
-                                            "onNothingSelected",
-                                            Toast.LENGTH_LONG
-                                        ).show()
+                                        override fun onItemSelected(
+                                            parent: AdapterView<*>?,
+                                            view: View?,
+                                            position: Int,
+                                            id: Long
+                                        ) {
+                                            jsonDataRespuesta.addProperty(
+                                                "strGenero",
+                                                arrayGenero[position].toString()
+                                            )
+                                        }
                                     }
-
-                                    override fun onItemSelected(
-                                        parent: AdapterView<*>?,
-                                        view: View?,
-                                        position: Int,
-                                        id: Long
-                                    ) {
+                                spinnerGenero.setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL)
+                                spinnerGenero.setLayoutParams(desplegableLayout)
+                                // Crear text de genero
+                                val textGenero = TextView(this@PreguntaActivity)
+                                textGenero.textSize = 17f
+                                textGenero.setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL)
+                                textGenero.setLayoutParams(generalLayout)
+                                textGenero.setText("Seleccione su Género")
+                                textGenero.setBackgroundColor(Color.TRANSPARENT)
+                                textGenero.setTextColor(Color.BLACK)
+                                textGenero.setTypeface(null, Typeface.BOLD)// Establecer estilo negrita
+                                cardLinearLayoutDA.addView(textGenero)
+                                // Crear CheckBox de genero
+                                val checkBoxGeneroMasc = CheckBox(this@PreguntaActivity)
+                                checkBoxGeneroMasc.text = "Masculino"
+                                checkBoxGeneroMasc.layoutParams = desplegableLayout
+                                val checkBoxGeneroFem = CheckBox(this@PreguntaActivity)
+                                checkBoxGeneroFem.text = "Femenino"
+                                checkBoxGeneroFem.layoutParams = desplegableLayout
+                                jsonDataRespuesta.addProperty(
+                                    "strGenero", ""
+                                )
+                                // Obtener el valor del CheckBox seleccionado Masculino
+                                checkBoxGeneroMasc.setOnCheckedChangeListener { buttonView, isChecked ->
+                                    if (isChecked) {
+                                        // Checkbox Masculino seleccionado
+                                        checkBoxGeneroFem.isChecked =
+                                            false // Deseleccionar Checkbox Femenino
                                         jsonDataRespuesta.addProperty(
-                                            "strGenero",
-                                            arrayGenero[position].toString()
+                                            "strGenero", "Masculino"
+                                        )
+                                    } else {
+                                        // Checkbox Masculino no seleccionado
+                                        jsonDataRespuesta.addProperty(
+                                            "strGenero", ""
                                         )
                                     }
                                 }
-                            spinnerGenero.setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL)
-                            spinnerGenero.setLayoutParams(desplegableLayout)
-                            // Crear text de genero
-                            val textGenero = TextView(this@PreguntaActivity)
-                            textGenero.textSize = 17f
-                            textGenero.setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL)
-                            textGenero.setLayoutParams(generalLayout)
-                            textGenero.setText("Seleccione su Género")
-                            textGenero.setBackgroundColor(Color.TRANSPARENT)
-                            textGenero.setTextColor(Color.BLACK)
-                            textGenero.setTypeface(null, Typeface.BOLD)// Establecer estilo negrita
-                            cardLinearLayoutDA.addView(textGenero)
-                            // Crear CheckBox de genero
-                            val checkBoxGeneroMasc = CheckBox(this@PreguntaActivity)
-                            checkBoxGeneroMasc.text = "Masculino"
-                            checkBoxGeneroMasc.layoutParams = desplegableLayout
-                            val checkBoxGeneroFem = CheckBox(this@PreguntaActivity)
-                            checkBoxGeneroFem.text = "Femenino"
-                            checkBoxGeneroFem.layoutParams = desplegableLayout
-                            jsonDataRespuesta.addProperty(
-                                "strGenero", ""
-                            )
-                            // Obtener el valor del CheckBox seleccionado Masculino
-                            checkBoxGeneroMasc.setOnCheckedChangeListener { buttonView, isChecked ->
-                                if (isChecked) {
-                                    // Checkbox Masculino seleccionado
-                                    checkBoxGeneroFem.isChecked =
-                                        false // Deseleccionar Checkbox Femenino
-                                    jsonDataRespuesta.addProperty(
-                                        "strGenero", "Masculino"
-                                    )
-                                } else {
-                                    // Checkbox Masculino no seleccionado
-                                    jsonDataRespuesta.addProperty(
-                                        "strGenero", ""
-                                    )
+                                // Obtener el valor del CheckBox seleccionado Femenino
+                                checkBoxGeneroFem.setOnCheckedChangeListener { buttonView, isChecked ->
+                                    if (isChecked) {
+                                        // Checkbox Femenino seleccionado
+                                        checkBoxGeneroMasc.isChecked =
+                                            false // Deseleccionar Checkbox Femenino
+                                        jsonDataRespuesta.addProperty(
+                                            "strGenero", "Femenino"
+                                        )
+                                    } else {
+                                        // Checkbox Femenino no seleccionado
+                                        jsonDataRespuesta.addProperty(
+                                            "strGenero", ""
+                                        )
+                                    }
                                 }
+                                cardLinearLayoutDA.addView(checkBoxGeneroMasc)
+                                cardLinearLayoutDA.addView(checkBoxGeneroFem)
+                                //cardLinearLayoutDA.addView(spinnerGenero)
                             }
-                            // Obtener el valor del CheckBox seleccionado Femenino
-                            checkBoxGeneroFem.setOnCheckedChangeListener { buttonView, isChecked ->
-                                if (isChecked) {
-                                    // Checkbox Femenino seleccionado
-                                    checkBoxGeneroMasc.isChecked =
-                                        false // Deseleccionar Checkbox Femenino
-                                    jsonDataRespuesta.addProperty(
-                                        "strGenero", "Femenino"
-                                    )
-                                } else {
-                                    // Checkbox Femenino no seleccionado
-                                    jsonDataRespuesta.addProperty(
-                                        "strGenero", ""
-                                    )
-                                }
-                            }
-                            cardLinearLayoutDA.addView(checkBoxGeneroMasc)
-                            cardLinearLayoutDA.addView(checkBoxGeneroFem)
-                            //cardLinearLayoutDA.addView(spinnerGenero)
                             cardViewDA.addView(cardLinearLayoutDA)
                             preguntaLayoutSecundario.addView(cardViewDA)
                         }
@@ -681,7 +694,7 @@ class PreguntaActivity : AppCompatActivity() {
                             }
                             val jsonObjectRespuesta = JsonObject()
                             jsonObjectRespuesta.add("data",jsonDataRespuesta)
-                            createRespuesta(jsonObjectRespuesta, idEncuestaGlobal,titulo,descripcion,permiteFirma,permiteDatoAdicional,tiempoDeEspera,email,idEmpresa)
+                            createRespuesta(jsonObjectRespuesta, idEncuestaGlobal,titulo,descripcion,permiteFirma,permiteDatoAdicional,permiteCorreo,permiteAnio,permiteGenero,tiempoDeEspera,email,idEmpresa)
                         }
                     }
                     else if(response.body()?.intStatus==204)
@@ -722,7 +735,7 @@ class PreguntaActivity : AppCompatActivity() {
             }
         }
     }
-    private fun createRespuesta(jsonObject:JsonObject,idEncuesta: Int,titulo:String,descripcion:String,strPermiteFirma:String,strPermiteDatoAdicional:String,intTiempo: Int,email:String,idEmpresa:Int)
+    private fun createRespuesta(jsonObject:JsonObject,idEncuesta: Int,titulo:String,descripcion:String,strPermiteFirma:String,strPermiteDatoAdicional:String,strPermiteCorreo:String,strPermiteAnio:String,strPermiteGenero:String,intTiempo: Int,email:String,idEmpresa:Int)
     {
         try {
             Log.d("Interceptor", "Request Respuesta: " + jsonObject)
@@ -747,9 +760,10 @@ class PreguntaActivity : AppCompatActivity() {
                                 .setConfirmText("Aceptar")
                                 .setConfirmClickListener {
                                     finish();
+                                    //1 Empresa Artefacta de prueba / Kennedy 11
                                     if(idEmpresa==100)
                                     {
-                                        getViewDatosPersonales(idEncuesta,titulo,descripcion,strPermiteFirma,strPermiteDatoAdicional,intTiempo,email,idEmpresa)
+                                        getViewDatosPersonales(idEncuesta,titulo,descripcion,strPermiteFirma,strPermiteDatoAdicional,strPermiteCorreo,strPermiteAnio,strPermiteGenero,intTiempo,email,idEmpresa)
                                     }
                                     else
                                     {
@@ -891,7 +905,7 @@ class PreguntaActivity : AppCompatActivity() {
         }
 
     }
-    private fun getViewDatosPersonales(idEncuesta: Int,titulo:String,descripcion:String,strPermiteFirma:String,strPermiteDatoAdicional:String,intTiempo: Int,email:String,idEmpresa: Int)
+    private fun getViewDatosPersonales(idEncuesta: Int,titulo:String,descripcion:String,strPermiteFirma:String,strPermiteDatoAdicional:String,strPermiteCorreo:String,strPermiteAnio:String,strPermiteGenero:String,intTiempo: Int,email:String,idEmpresa: Int)
     {
         Log.d("Interceptor","getViewDatosPersonales")
         val datosPersonalesActivityIntent = Intent(this, DatosPersonalesActivity::class.java).apply()
@@ -901,6 +915,9 @@ class PreguntaActivity : AppCompatActivity() {
             putExtra("descripcion",descripcion)
             putExtra("permiteFirma",strPermiteFirma)
             putExtra("permiteDatoAdicional",strPermiteDatoAdicional)
+            putExtra("permiteCorreo",strPermiteCorreo)
+            putExtra("permiteAnio",strPermiteAnio)
+            putExtra("permiteGenero",strPermiteGenero)
             putExtra("tiempoDeEspera",intTiempo)
             putExtra("email",email)
             putExtra("idEmpresa",idEmpresa)

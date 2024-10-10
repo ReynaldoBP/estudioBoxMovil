@@ -132,11 +132,11 @@ class EncuestaActivity : AppCompatActivity() {
                                 //1 Empresa Artefacta de prueba / Kennedy 11
                                 if(idEmpresa==100)
                                 {
-                                    getViewDatosPersonales(arrayItem.intIdEncuesta,arrayItem.strTitulo,arrayItem.strDescripcion,arrayItem.strPermiteFirma,arrayItem.strPermiteDatoAdicional,arrayItem.intTiempo,email,idEmpresa)
+                                    getViewDatosPersonales(arrayItem.intIdEncuesta,arrayItem.strTitulo,arrayItem.strDescripcion,arrayItem.strPermiteFirma,arrayItem.strPermiteDatoAdicional,arrayItem.strPermiteCorreo,arrayItem.strPermiteAnio,arrayItem.strPermiteGenero,arrayItem.intTiempo,email,idEmpresa)
                                 }
                                 else
                                 {
-                                    getViewPregunta(arrayItem.intIdEncuesta,arrayItem.strTitulo,arrayItem.strDescripcion,arrayItem.strPermiteFirma,arrayItem.strPermiteDatoAdicional,arrayItem.intTiempo,email,idEmpresa)
+                                    getViewPregunta(arrayItem.intIdEncuesta,arrayItem.strTitulo,arrayItem.strDescripcion,arrayItem.strPermiteFirma,arrayItem.strPermiteDatoAdicional,arrayItem.strPermiteCorreo,arrayItem.strPermiteAnio,arrayItem.strPermiteGenero,arrayItem.intTiempo,email,idEmpresa)
                                 }
                             }
                             cardView.addView(cardLinearLayout)
@@ -186,7 +186,7 @@ class EncuestaActivity : AppCompatActivity() {
             }
         }
     }
-    private fun getViewDatosPersonales(idEncuesta: Int,titulo:String,descripcion:String,strPermiteFirma:String,strPermiteDatoAdicional:String,intTiempo: Int,email:String,idEmpresa: Int)
+    private fun getViewDatosPersonales(idEncuesta: Int,titulo:String,descripcion:String,strPermiteFirma:String,strPermiteDatoAdicional:String,strPermiteCorreo:String,strPermiteAnio:String,strPermiteGenero:String,intTiempo: Int,email:String,idEmpresa: Int)
     {
         val datosPersonalesActivityIntent = Intent(this, DatosPersonalesActivity::class.java).apply()
         {
@@ -195,6 +195,9 @@ class EncuestaActivity : AppCompatActivity() {
             putExtra("descripcion",descripcion)
             putExtra("permiteFirma",strPermiteFirma)
             putExtra("permiteDatoAdicional",strPermiteDatoAdicional)
+            putExtra("permiteCorreo",strPermiteCorreo)
+            putExtra("permiteAnio",strPermiteAnio)
+            putExtra("permiteGenero",strPermiteGenero)
             putExtra("tiempoDeEspera",intTiempo)
             putExtra("email",email)
             putExtra("idEmpresa",idEmpresa)
@@ -202,7 +205,7 @@ class EncuestaActivity : AppCompatActivity() {
         }
         startActivity(datosPersonalesActivityIntent)
     }
-    private fun getViewPregunta(idEncuesta: Int,titulo:String,descripcion:String,strPermiteFirma:String,strPermiteDatoAdicional:String,intTiempo: Int,email:String,idEmpresa:Int)
+    private fun getViewPregunta(idEncuesta: Int,titulo:String,descripcion:String,strPermiteFirma:String,strPermiteDatoAdicional:String,strPermiteCorreo:String,strPermiteAnio:String,strPermiteGenero:String,intTiempo: Int,email:String,idEmpresa:Int)
     {
         val preguntaActivityIntent = Intent(this, PreguntaActivity::class.java).apply()
         {
@@ -211,6 +214,9 @@ class EncuestaActivity : AppCompatActivity() {
             putExtra("descripcion",descripcion)
             putExtra("permiteFirma",strPermiteFirma)
             putExtra("permiteDatoAdicional",strPermiteDatoAdicional)
+            putExtra("permiteCorreo",strPermiteCorreo)
+            putExtra("permiteAnio",strPermiteAnio)
+            putExtra("permiteGenero",strPermiteGenero)
             putExtra("tiempoDeEspera",intTiempo)
             putExtra("email",email)
             putExtra("idEmpresa",idEmpresa)
